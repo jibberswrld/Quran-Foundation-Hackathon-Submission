@@ -54,7 +54,6 @@ export default function OnboardingClient() {
 
     saveGoal(goal);
 
-    // Best-effort sync — don't block navigation if it fails
     try {
       await syncGoalToApi(goal);
     } catch {
@@ -72,32 +71,34 @@ export default function OnboardingClient() {
   return (
     <div className="w-full max-w-md">
       {/* Header */}
-      <div className="text-center mb-10">
-        <span className="text-5xl mb-4 block">☽</span>
-        <h1 className="text-3xl font-bold text-stone-800">Welcome to Quran Coach</h1>
-        <p className="text-stone-500 mt-2 text-sm">
+      <div className="mb-10 text-center">
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-3xl shadow-[0_0_0_1px_rgba(34,197,94,0.25),0_8px_24px_rgba(34,197,94,0.2)]">
+          ☽
+        </div>
+        <h1 className="text-3xl font-bold tracking-tight text-zinc-50">
+          Welcome to Quran Coach
+        </h1>
+        <p className="mt-2 text-sm text-zinc-500">
           Set your reading goal and we&apos;ll build a personalised daily plan.
         </p>
       </div>
 
       {/* Step: type */}
       {step === "type" && (
-        <div className="space-y-4">
-          <h2 className="text-sm font-semibold text-stone-600 uppercase tracking-wide mb-2">
-            What&apos;s your goal?
-          </h2>
+        <div className="space-y-3">
+          <p className="section-label mb-3">What&apos;s your goal?</p>
           {(Object.keys(GOAL_DESCRIPTIONS) as GoalType[]).map((type) => (
             <button
               key={type}
               onClick={() => handleTypeSelect(type)}
-              className="w-full text-left px-5 py-4 rounded-2xl border-2 border-stone-200 hover:border-emerald-400 hover:bg-emerald-50 transition-all group"
+              className="group w-full rounded-2xl border border-zinc-800 bg-zinc-900 px-5 py-4 text-left transition-all hover:border-emerald-500/40 hover:bg-zinc-900/80"
             >
-              <span className="font-semibold text-stone-800 group-hover:text-emerald-700 block">
+              <span className="block font-semibold text-zinc-100 transition-colors group-hover:text-emerald-400">
                 {type === "finish_in_days"
                   ? "Finish the Quran"
                   : "Memorise ayahs"}
               </span>
-              <span className="text-sm text-stone-500 mt-1 block">
+              <span className="mt-1 block text-sm text-zinc-500">
                 {type === "finish_in_days"
                   ? "Complete a Khatmah at your own pace"
                   : "Build a weekly memorisation habit"}
@@ -112,18 +113,18 @@ export default function OnboardingClient() {
         <div className="space-y-6">
           <button
             onClick={() => setStep("type")}
-            className="text-sm text-stone-400 hover:text-stone-600"
+            className="text-sm text-zinc-600 transition-colors hover:text-zinc-400"
           >
             ← Back
           </button>
-          <div>
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
             <label
               htmlFor="goal-value"
-              className="block text-sm font-semibold text-stone-600 uppercase tracking-wide mb-1"
+              className="section-label block mb-3"
             >
               {desc.label}
             </label>
-            <div className="flex items-center gap-3 mt-2">
+            <div className="flex items-center gap-3">
               <input
                 id="goal-value"
                 type="number"
@@ -133,14 +134,14 @@ export default function OnboardingClient() {
                 onChange={(e) =>
                   setGoalValue(Math.max(desc.min, Math.min(desc.max, Number(e.target.value))))
                 }
-                className="w-32 text-2xl font-bold text-center text-emerald-700 border-2 border-stone-200 rounded-xl py-2 focus:outline-none focus:border-emerald-400"
+                className="w-32 rounded-xl border border-zinc-700 bg-zinc-950 py-2 text-center text-2xl font-bold text-emerald-400 focus:border-emerald-500/50 focus:outline-none focus:ring-1 focus:ring-emerald-500/20"
               />
-              <span className="text-stone-500 text-sm">{desc.unit}</span>
+              <span className="text-sm text-zinc-500">{desc.unit}</span>
             </div>
             {goalType === "finish_in_days" && (
-              <p className="text-xs text-stone-400 mt-3">
+              <p className="mt-4 text-xs text-zinc-600">
                 That&apos;s roughly{" "}
-                <strong className="text-stone-600">
+                <strong className="text-zinc-400">
                   {Math.ceil(6236 / goalValue)} verses
                 </strong>{" "}
                 per day (6,236 total ayahs).
@@ -149,7 +150,7 @@ export default function OnboardingClient() {
           </div>
           <button
             onClick={handleValueConfirm}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-2xl transition-colors"
+            className="btn-primary w-full py-3 text-sm"
           >
             Continue →
           </button>
@@ -161,25 +162,30 @@ export default function OnboardingClient() {
         <div className="space-y-6">
           <button
             onClick={() => setStep("value")}
-            className="text-sm text-stone-400 hover:text-stone-600"
+            className="text-sm text-zinc-600 transition-colors hover:text-zinc-400"
           >
             ← Back
           </button>
-          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center space-y-1">
-            <p className="text-stone-500 text-sm">Your goal</p>
-            <p className="text-xl font-bold text-emerald-700">
+          <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-6 text-center">
+            <p className="text-xs text-zinc-600 mb-1">Your goal</p>
+            <p className="text-xl font-bold tracking-tight text-emerald-400">
               {goalType === "finish_in_days"
                 ? `Finish in ${goalValue} days`
                 : `Memorise ${goalValue} ayahs / week`}
             </p>
-            <p className="text-xs text-stone-400">
-              Starting {new Date().toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}
+            <p className="mt-2 text-xs text-zinc-600">
+              Starting{" "}
+              {new Date().toLocaleDateString(undefined, {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}
             </p>
           </div>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-stone-300 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-2xl transition-colors"
+            className="btn-primary w-full py-3 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? "Saving…" : "Start my journey →"}
           </button>

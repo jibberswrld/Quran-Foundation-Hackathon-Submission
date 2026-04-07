@@ -7,8 +7,11 @@ export const metadata = {
 
 export default function DashboardPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10">
-      <h1 className="text-2xl font-bold text-stone-800 mb-8">Dashboard</h1>
+    <div className="page-container py-12">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight text-zinc-50">Dashboard</h1>
+        <p className="mt-1.5 text-sm text-zinc-500">Your reading journey at a glance.</p>
+      </div>
       <DashboardClient />
     </div>
   );

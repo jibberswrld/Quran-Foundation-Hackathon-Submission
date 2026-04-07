@@ -7,8 +7,11 @@ export const metadata = {
 
 export default function ReadPage() {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10">
-      <h1 className="text-2xl font-bold text-stone-800 mb-8">Daily Read</h1>
+    <div className="page-container-sm py-12">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold tracking-tight text-zinc-50">Daily Read</h1>
+        <p className="mt-1.5 text-sm text-zinc-500">Your assigned verses for today.</p>
+      </div>
       <ReadClient />
     </div>
   );

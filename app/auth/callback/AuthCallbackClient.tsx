@@ -4,7 +4,6 @@ import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
-/** Supabase verifyOtp `type` for token_hash links */
 type VerifyOtpType =
   | "signup"
   | "email"
@@ -43,22 +42,11 @@ function parseOtpType(raw: string | null): VerifyOtpType | null {
   return OTP_TYPES.includes(raw as VerifyOtpType) ? (raw as VerifyOtpType) : null;
 }
 
-/**
- * Finishes email / OAuth confirmation in the browser.
- *
- * Cross-browser: Supabase "confirm signup" must reach this URL with either
- * - #access_token=…&refresh_token=… (implicit / magic link), or
- * - ?token_hash=…&type=signup|email|… (recommended; set this in Dashboard →
- *   Authentication → Email Templates → Confirm signup → link URL), not only ?code=
- *   which is PKCE and tied to the browser where signup started.
- */
 function AuthCallbackInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<"working" | "error">("working");
-  const [message, setMessage] = useState<string>(
-    "Confirming your account…"
-  );
+  const [message, setMessage] = useState<string>("Confirming your account…");
   const ran = useRef(false);
 
   useEffect(() => {
@@ -73,10 +61,7 @@ function AuthCallbackInner() {
       const token_hash = searchParams.get("token_hash");
       const type = parseOtpType(searchParams.get("type"));
       if (token_hash && type) {
-        const { error } = await supabase.auth.verifyOtp({
-          token_hash,
-          type,
-        });
+        const { error } = await supabase.auth.verifyOtp({ token_hash, type });
         if (error) {
           setStatus("error");
           setMessage(error.message);
@@ -93,7 +78,7 @@ function AuthCallbackInner() {
         if (error) {
           setStatus("error");
           setMessage(
-            "This confirmation link uses a one-time code that only works in the same browser and session where you signed up. Open the link in that browser, or ask for a new confirmation email and update your Supabase “Confirm signup” template to use token_hash (see comments in AuthCallbackClient)."
+            "This confirmation link uses a one-time code that only works in the same browser and session where you signed up. Open the link in that browser, or ask for a new confirmation email and update your Supabase \u201cConfirm signup\u201d template to use token_hash."
           );
           return;
         }
@@ -131,7 +116,6 @@ function AuthCallbackInner() {
         data: { user },
       } = await supabase.auth.getUser();
       if (user) {
-        // Already signed in (e.g. revisiting callback) — don’t force onboarding again
         router.replace("/");
         router.refresh();
         return;
@@ -147,19 +131,32 @@ function AuthCallbackInner() {
   }, [router, searchParams]);
 
   return (
-    <div className="mx-auto max-w-md px-4 py-16 text-center">
+    <div className="mx-auto w-full max-w-md px-4 text-center">
       {status === "working" ? (
-        <p className="text-sm text-stone-500">{message}</p>
+        <div className="space-y-5">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-2xl shadow-[0_0_0_1px_rgba(34,197,94,0.25),0_8px_24px_rgba(34,197,94,0.2)]">
+            ☽
+          </div>
+          <div>
+            <p className="text-sm font-medium text-zinc-300">{message}</p>
+            <div className="mt-3 flex items-center justify-center gap-1.5">
+              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.3s]" />
+              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.15s]" />
+              <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-500" />
+            </div>
+          </div>
+        </div>
       ) : (
-        <div className="space-y-4 rounded-2xl border border-red-200 bg-red-50 p-6 text-left text-sm text-red-800">
-          <p className="font-semibold">Could not confirm</p>
-          <p>{message}</p>
+        <div className="relative overflow-hidden rounded-2xl border border-red-900/40 bg-red-950/30 p-6 text-left">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
+          <p className="mb-2 font-semibold text-red-400">Could not confirm</p>
+          <p className="mb-4 text-sm text-red-500/80">{message}</p>
           <button
             type="button"
             onClick={() => router.replace("/auth/login")}
-            className="text-emerald-700 underline"
+            className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
           >
-            Back to sign in
+            ← Back to sign in
           </button>
         </div>
       )}
@@ -171,8 +168,9 @@ export default function AuthCallbackClient() {
   return (
     <Suspense
       fallback={
-        <div className="mx-auto max-w-md px-4 py-16 text-center text-sm text-stone-500">
-          Loading…
+        <div className="mx-auto w-full max-w-md px-4 text-center">
+          <div className="skeleton mx-auto mb-4 h-12 w-12 rounded-2xl" />
+          <div className="skeleton mx-auto h-4 w-40 rounded" />
         </div>
       }
     >

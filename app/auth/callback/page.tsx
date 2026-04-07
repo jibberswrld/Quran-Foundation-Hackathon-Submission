@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function AuthCallbackPage() {
   return (
-    <div className="flex min-h-[calc(100vh-8rem)] items-start justify-center">
+    <div className="flex min-h-[calc(100vh-8rem)] items-start justify-center pt-24">
       <AuthCallbackClient />
     </div>
   );

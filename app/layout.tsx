@@ -13,13 +13,12 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" dir="ltr">
-      <body className="min-h-screen flex flex-col bg-stone-50 text-stone-900">
+    <html lang="en" dir="ltr" className="dark">
+      <body className="min-h-screen flex flex-col bg-zinc-950 text-zinc-50 antialiased">
         <NavBar />
         <main className="flex-1">{children}</main>
-        <footer className="py-4 text-center text-xs text-stone-400 border-t border-stone-200">
-          © {new Date().getFullYear()} Quran Coach · Powered by Quran Foundation
-          & Claude
+        <footer className="py-5 text-center text-xs text-zinc-700 border-t border-zinc-900">
+          © {new Date().getFullYear()} Quran Coach · Powered by Quran Foundation &amp; Claude
         </footer>
       </body>
     </html>

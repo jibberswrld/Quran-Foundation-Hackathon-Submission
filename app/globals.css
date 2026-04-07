@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-inter: "Inter", system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-stone-50 text-stone-900 antialiased;
+  }
+
+  /* Arabic text rendering */
+  .arabic {
+    font-family: "Amiri", "Scheherazade New", "KFGQPC Uthmanic Script HAFS", serif;
+    direction: rtl;
+    unicode-bidi: bidi-override;
+    @apply leading-loose tracking-wide;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { GoalType, UserGoal } from "@/lib/types";
 import { saveGoal } from "@/lib/storage";
 import { syncGoalToApi } from "@/lib/user";
+import { upsertUserGoalAction } from "@/app/actions/user-data";
 
 type Step = "type" | "value" | "confirm";
 
@@ -59,6 +60,8 @@ export default function OnboardingClient() {
     } catch {
       // Silently continue; local-first state is already saved
     }
+
+    void upsertUserGoalAction(goal);
 
     setSaving(false);
     router.push("/dashboard");

@@ -8,11 +8,12 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
+    <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-16">
       <Suspense
         fallback={
-          <div className="text-sm text-stone-400" aria-live="polite">
-            Loading…
+          <div className="w-full max-w-md space-y-4">
+            <div className="skeleton mx-auto h-12 w-12 rounded-2xl" />
+            <div className="skeleton h-64 w-full rounded-2xl" />
           </div>
         }
       >

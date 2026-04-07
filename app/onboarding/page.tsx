@@ -1,13 +1,13 @@
 import OnboardingClient from "./OnboardingClient";
 
 export const metadata = {
-  title: "Get Started · Quran Coach",
-  description: "Set your daily Quran reading goal and pace.",
+  title: "Set your goal · Quran Coach",
+  description: "Choose your reading pace and start your journey.",
 };
 
 export default function OnboardingPage() {
   return (
-    <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-12">
+    <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center px-4 py-16">
       <OnboardingClient />
     </div>
   );

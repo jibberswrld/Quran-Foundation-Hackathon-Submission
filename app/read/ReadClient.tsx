@@ -15,6 +15,30 @@ type LoadState =
   | { status: "ready"; verses: Verse[] }
   | { status: "error"; message: string };
 
+function VerseCardSkeleton() {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
+      {/* header */}
+      <div className="flex items-center justify-between border-b border-zinc-800/60 bg-zinc-950/40 px-5 py-3">
+        <div className="skeleton h-3 w-16" />
+        <div className="skeleton h-3 w-24" />
+      </div>
+      {/* arabic block */}
+      <div className="px-8 py-10 space-y-4">
+        <div className="skeleton h-8 w-[85%] ml-auto" />
+        <div className="skeleton h-8 w-[70%] ml-auto" />
+        <div className="skeleton h-8 w-[50%] ml-auto" />
+      </div>
+      {/* translation */}
+      <div className="px-6 py-5 space-y-2.5 border-t border-zinc-800/50">
+        <div className="skeleton h-3.5 w-full" />
+        <div className="skeleton h-3.5 w-[88%]" />
+        <div className="skeleton h-3.5 w-[72%]" />
+      </div>
+    </div>
+  );
+}
+
 export default function ReadClient() {
   const [loadState, setLoadState] = useState<LoadState>({ status: "idle" });
   const [userState, setUserState] = useState<LocalUserState>({
@@ -75,7 +99,6 @@ export default function ReadClient() {
     if (activeIndex < verses.length - 1) {
       setActiveIndex((i) => i + 1);
     } else {
-      // Mark the session complete
       const lastVerse = verses[verses.length - 1];
       const newProgress = updateProgress(lastVerse.verseKey, verses.length);
       setUserState((prev) => ({ ...prev, progress: newProgress }));
@@ -84,19 +107,28 @@ export default function ReadClient() {
 
   if (loadState.status === "idle" || loadState.status === "loading") {
     return (
-      <div className="flex items-center justify-center py-24 text-stone-400 text-sm gap-3">
-        <span className="animate-spin inline-block">⟳</span>
-        <span>Loading today&apos;s verses…</span>
+      <div className="space-y-5">
+        {/* Progress bar skeleton */}
+        <div className="flex items-center gap-3">
+          <div className="skeleton h-2.5 w-12 rounded" />
+          <div className="flex-1 h-0.5 rounded-full bg-zinc-800" />
+          <div className="skeleton h-2.5 w-10 rounded" />
+        </div>
+        <VerseCardSkeleton />
+        <div className="skeleton h-12 w-full rounded-xl" />
       </div>
     );
   }
 
   if (loadState.status === "error") {
     return (
-      <div className="bg-red-50 border border-red-200 rounded-2xl p-6 text-sm text-red-700 space-y-3">
+      <div className="rounded-2xl border border-red-900/40 bg-red-950/30 p-6 text-sm text-red-400 space-y-3">
         <p>{loadState.message}</p>
-        <button onClick={load} className="text-emerald-600 hover:underline text-sm">
-          Retry
+        <button
+          onClick={load}
+          className="text-emerald-400 hover:text-emerald-300 transition-colors text-sm"
+        >
+          Retry →
         </button>
       </div>
     );
@@ -104,28 +136,41 @@ export default function ReadClient() {
 
   const { verses } = loadState;
   const activeVerse = verses[activeIndex];
-  const isComplete = userState.progress?.lastVerseKey === verses[verses.length - 1]?.verseKey;
+  const isComplete =
+    userState.progress?.lastVerseKey === verses[verses.length - 1]?.verseKey;
+  const progressPct = ((activeIndex + 1) / verses.length) * 100;
 
   return (
-    <div className="space-y-6">
-      {/* Progress indicator */}
-      <div className="flex items-center justify-between text-xs text-stone-400">
-        <span>
-          Verse {activeIndex + 1} of {verses.length}
+    <div className="space-y-5">
+      {/* Progress bar */}
+      <div className="flex items-center gap-3">
+        <span className="text-xs text-zinc-600">
+          {activeIndex + 1} / {verses.length}
         </span>
-        <span>{activeVerse.verseKey}</span>
+        <div className="relative flex-1 h-0.5 rounded-full bg-zinc-800">
+          <div
+            className="absolute inset-y-0 left-0 rounded-full bg-emerald-500 transition-all duration-300"
+            style={{
+              width: `${progressPct}%`,
+              boxShadow: "0 0 6px rgba(34,197,94,0.5)",
+            }}
+          />
+        </div>
+        <span className="text-xs text-zinc-600">{activeVerse.verseKey}</span>
       </div>
 
-      {/* Verse navigation dots */}
+      {/* Verse nav dots */}
       {verses.length > 1 && (
-        <div className="flex gap-1.5 justify-center flex-wrap">
+        <div className="flex gap-1.5 justify-center">
           {verses.map((v, i) => (
             <button
               key={v.verseKey}
               onClick={() => setActiveIndex(i)}
               aria-label={`Go to verse ${v.verseKey}`}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                i === activeIndex ? "bg-emerald-500" : "bg-stone-300"
+              className={`rounded-full transition-all duration-200 ${
+                i === activeIndex
+                  ? "h-1.5 w-4 bg-emerald-500 shadow-[0_0_6px_rgba(34,197,94,0.6)]"
+                  : "h-1.5 w-1.5 bg-zinc-700 hover:bg-zinc-500"
               }`}
             />
           ))}
@@ -153,21 +198,23 @@ export default function ReadClient() {
       <ReflectionBox verse={activeVerse} onSave={handleSaveReflection} />
 
       {/* Navigation */}
-      <div className="flex gap-3 pt-2">
+      <div className="flex gap-3 pt-1">
         {activeIndex > 0 && (
           <button
             onClick={() => setActiveIndex((i) => i - 1)}
-            className="flex-1 border border-stone-200 hover:border-stone-300 text-stone-600 text-sm font-medium py-3 rounded-2xl transition-colors"
+            className="btn-ghost flex-1 py-3 text-sm font-medium"
           >
             ← Previous
           </button>
         )}
         <button
           onClick={() => handleNextVerse(verses)}
-          className={`flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold py-3 rounded-2xl transition-colors ${
-            isComplete ? "bg-stone-300 cursor-default" : ""
-          }`}
           disabled={isComplete}
+          className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all duration-150 ${
+            isComplete
+              ? "cursor-default border border-zinc-800 bg-zinc-900 text-zinc-600"
+              : "btn-primary"
+          }`}
         >
           {activeIndex < verses.length - 1
             ? "Next verse →"

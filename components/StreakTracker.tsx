@@ -10,10 +10,13 @@ interface StreakTrackerProps {
 function ProgressBar({ value, max }: { value: number; max: number }) {
   const pct = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0;
   return (
-    <div className="w-full bg-stone-200 rounded-full h-2">
+    <div className="relative h-1 w-full overflow-hidden rounded-full bg-zinc-800">
       <div
-        className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
-        style={{ width: `${pct}%` }}
+        className="absolute inset-y-0 left-0 rounded-full bg-emerald-500 transition-all duration-500"
+        style={{
+          width: `${pct}%`,
+          boxShadow: pct > 0 ? "0 0 8px rgba(34,197,94,0.5)" : "none",
+        }}
         role="progressbar"
         aria-valuenow={value}
         aria-valuemin={0}
@@ -27,8 +30,14 @@ function ProgressBar({ value, max }: { value: number; max: number }) {
 export default function StreakTracker({ progress, goal }: StreakTrackerProps) {
   if (!progress && !goal) {
     return (
-      <div className="bg-white rounded-2xl border border-stone-200 p-6 text-center text-stone-400 text-sm">
-        No progress yet. Set a goal to get started!
+      <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-zinc-800 p-8 text-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-2xl">
+          📖
+        </div>
+        <div>
+          <p className="text-sm font-medium text-zinc-300">No progress yet</p>
+          <p className="mt-0.5 text-xs text-zinc-600">Set a goal to get started!</p>
+        </div>
       </div>
     );
   }
@@ -36,12 +45,10 @@ export default function StreakTracker({ progress, goal }: StreakTrackerProps) {
   const streakDays = progress?.streakDays ?? 0;
   const totalRead = progress?.totalVersesRead ?? 0;
 
-  // Compute a weekly target from the goal
   let weeklyTarget = 0;
   let weeklyLabel = "";
   if (goal) {
     if (goal.type === "finish_in_days") {
-      // ~6,236 total verses / days × 7
       weeklyTarget = Math.ceil((6236 / goal.value) * 7);
       weeklyLabel = `${weeklyTarget} verses / week to finish in ${goal.value} days`;
     } else {
@@ -50,49 +57,54 @@ export default function StreakTracker({ progress, goal }: StreakTrackerProps) {
     }
   }
 
-  // Approximate this week's verses as totalRead mod weeklyTarget
   const thisWeekRead =
     weeklyTarget > 0 ? totalRead % weeklyTarget : totalRead;
 
-  const statCards: { label: string; value: string | number; icon: string }[] =
-    [
-      { label: "Current streak", value: `${streakDays} day${streakDays !== 1 ? "s" : ""}`, icon: "🔥" },
-      { label: "Verses completed", value: totalRead.toLocaleString(), icon: "📖" },
-    ];
-
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* Stat cards */}
-      <div className="grid grid-cols-2 gap-4">
-        {statCards.map((s) => (
-          <div
-            key={s.label}
-            className="bg-white rounded-2xl border border-stone-200 shadow-sm p-5 flex flex-col gap-1"
-          >
-            <span className="text-2xl">{s.icon}</span>
-            <span className="text-2xl font-bold text-stone-800">{s.value}</span>
-            <span className="text-xs text-stone-500">{s.label}</span>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+          <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-base">
+            🔥
           </div>
-        ))}
+          <p className="text-3xl font-bold tracking-tight text-zinc-50">
+            {streakDays}
+          </p>
+          <p className="mt-1 text-xs text-zinc-600">Day streak</p>
+        </div>
+
+        <div className="relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+          <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl border border-amber-500/20 bg-amber-500/10 text-base">
+            📖
+          </div>
+          <p className="text-3xl font-bold tracking-tight text-zinc-50">
+            {totalRead.toLocaleString()}
+          </p>
+          <p className="mt-1 text-xs text-zinc-600">Verses completed</p>
+        </div>
       </div>
 
       {/* Weekly progress */}
       {goal && weeklyTarget > 0 && (
-        <div className="bg-white rounded-2xl border border-stone-200 shadow-sm p-5 space-y-3">
-          <div className="flex justify-between items-center text-sm">
-            <span className="font-medium text-stone-700">Weekly progress</span>
-            <span className="text-stone-400">
+        <div className="relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+          <div className="mb-3 flex items-center justify-between">
+            <span className="text-sm font-medium text-zinc-300">Weekly progress</span>
+            <span className="text-xs text-zinc-600">
               {thisWeekRead} / {weeklyTarget}
             </span>
           </div>
           <ProgressBar value={thisWeekRead} max={weeklyTarget} />
-          <p className="text-xs text-stone-400">{weeklyLabel}</p>
+          <p className="mt-2.5 text-xs text-zinc-600">{weeklyLabel}</p>
         </div>
       )}
 
       {progress?.lastReadAt && (
-        <p className="text-xs text-stone-400 text-right">
-          Last read:{" "}
+        <p className="text-right text-xs text-zinc-700">
+          Last read{" "}
           {new Date(progress.lastReadAt).toLocaleDateString(undefined, {
             weekday: "short",
             month: "short",

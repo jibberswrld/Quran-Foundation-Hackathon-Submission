@@ -6,10 +6,6 @@ import { loadLocalUserState } from "@/lib/storage";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
-/**
- * When Supabase is configured: requires a signed-in user, then redirects by local goal.
- * Without Supabase: same as before (local goal → dashboard vs onboarding).
- */
 export default function RootRedirect() {
   const router = useRouter();
 
@@ -49,8 +45,15 @@ export default function RootRedirect() {
   }, [router]);
 
   return (
-    <div className="flex min-h-[calc(100vh-8rem)] items-center justify-center">
-      <span className="text-sm text-stone-400">Loading…</span>
+    <div className="flex min-h-[calc(100vh-8rem)] flex-col items-center justify-center gap-4">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 text-2xl shadow-[0_0_0_1px_rgba(34,197,94,0.25),0_8px_24px_rgba(34,197,94,0.2)]">
+        ☽
+      </div>
+      <div className="flex items-center gap-1.5">
+        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.3s]" />
+        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-500 [animation-delay:-0.15s]" />
+        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-emerald-500" />
+      </div>
     </div>
   );
 }

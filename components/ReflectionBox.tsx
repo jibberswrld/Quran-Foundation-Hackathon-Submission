@@ -55,71 +55,85 @@ export default function ReflectionBox({ verse, onSave }: ReflectionBoxProps) {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 space-y-4">
-      <div className="flex items-center gap-2">
-        <span className="text-xl">✨</span>
-        <h3 className="font-semibold text-stone-800">AI Reflection</h3>
+    <div className="relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+
+      {/* Header */}
+      <div className="mb-4 flex items-center gap-2">
+        <span className="text-base text-emerald-400">✦</span>
+        <h3 className="text-sm font-semibold text-zinc-100">AI Reflection</h3>
+        <span className="rounded-md border border-emerald-500/20 bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-400">
+          Claude
+        </span>
       </div>
 
+      {/* Idle */}
       {state.status === "idle" && (
-        <div className="space-y-3">
-          <p className="text-sm text-stone-500">
+        <div className="space-y-4">
+          <p className="text-sm text-zinc-500">
             Generate a personalised reflection on this verse using Claude AI.
           </p>
           <button
             onClick={generateReflection}
-            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium py-2.5 px-4 rounded-xl transition-colors"
+            className="btn-primary w-full py-2.5 text-sm"
           >
             Generate reflection
           </button>
         </div>
       )}
 
+      {/* Loading — skeleton */}
       {state.status === "loading" && (
-        <div className="flex items-center gap-3 text-sm text-stone-500 py-2">
-          <span className="animate-spin inline-block">⟳</span>
-          <span>Generating reflection…</span>
+        <div className="space-y-3 py-1">
+          <div className="skeleton h-3.5 w-full" />
+          <div className="skeleton h-3.5 w-[90%]" />
+          <div className="skeleton h-3.5 w-[75%]" />
+          <div className="skeleton mt-2 h-3.5 w-[85%]" />
+          <div className="skeleton h-3.5 w-[60%]" />
         </div>
       )}
 
+      {/* Error */}
       {state.status === "error" && (
         <div className="space-y-3">
-          <p className="text-sm text-red-500 bg-red-50 px-4 py-3 rounded-xl">
+          <p className="rounded-xl border border-red-900/40 bg-red-950/40 px-4 py-3 text-sm text-red-400">
             {state.message}
           </p>
           <button
             onClick={generateReflection}
-            className="text-sm text-emerald-600 hover:underline"
+            className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
           >
-            Try again
+            Try again →
           </button>
         </div>
       )}
 
+      {/* Ready */}
       {state.status === "ready" && (
         <div className="space-y-4">
-          <blockquote className="border-l-4 border-emerald-400 pl-4 text-stone-700 text-sm leading-7 italic">
+          <blockquote className="border-l-2 border-emerald-500/60 pl-4 text-sm italic leading-relaxed text-zinc-300">
             {state.reflection}
           </blockquote>
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <button
               onClick={handleSave}
-              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium py-2.5 px-4 rounded-xl transition-colors"
+              className="btn-primary flex-1 py-2.5 text-sm"
             >
               Save reflection
             </button>
             <button
               onClick={generateReflection}
-              className="text-sm text-stone-500 hover:text-stone-700 px-4 py-2.5 rounded-xl border border-stone-200 hover:border-stone-300 transition-colors"
+              className="btn-ghost px-4 py-2.5 text-sm"
             >
-              Regenerate
+              ↺
             </button>
           </div>
         </div>
       )}
 
+      {/* Saved */}
       {state.status === "saved" && (
-        <div className="flex items-center gap-2 text-sm text-emerald-600 bg-emerald-50 px-4 py-3 rounded-xl">
+        <div className="flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-400">
           <span>✓</span>
           <span>Reflection saved to your journal.</span>
         </div>

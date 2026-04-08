@@ -58,7 +58,7 @@ export default function SignupForm() {
           )
         ) {
           setError(
-            "This email is already registered. Sign in instead, or use "Resend confirmation" below if you still need to verify your email."
+            'This email is already registered. Sign in instead, or use "Resend confirmation" below if you still need to verify your email.'
           );
         } else {
           setError(msg);

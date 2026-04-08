@@ -1,7 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/lib/database.types";
-import { isDeployedWithoutSupabase, isSupabaseConfigured } from "./config";
+import {
+  getPublicSupabaseEnv,
+  type SupabasePublicEnvOverrides,
+} from "./config";
 
 /**
  * Refreshes Auth cookies. When Supabase is configured:
@@ -9,14 +12,23 @@ import { isDeployedWithoutSupabase, isSupabaseConfigured } from "./config";
  * - Requires a saved reading goal (user_goals row) before /, /dashboard, or /read
  *   so email confirmation alone does not unlock the app until onboarding finishes.
  */
-export async function updateSession(request: NextRequest) {
+export async function updateSession(
+  request: NextRequest,
+  edgePublic?: SupabasePublicEnvOverrides
+) {
   let supabaseResponse = NextResponse.next({
     request,
   });
 
   const path = request.nextUrl.pathname;
+  const { url: supabaseUrl, anonKey: supabaseAnonKey, configured } =
+    getPublicSupabaseEnv(edgePublic);
 
-  if (isDeployedWithoutSupabase()) {
+  const deployedWithoutSupabase =
+    !configured &&
+    (process.env.VERCEL === "1" || process.env.NODE_ENV === "production");
+
+  if (deployedWithoutSupabase) {
     if (
       path === "/auth/setup-required" ||
       path.startsWith("/auth/setup-required/")
@@ -35,13 +47,13 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/setup-required", request.url));
   }
 
-  if (!isSupabaseConfigured()) {
+  if (!configured) {
     return supabaseResponse;
   }
 
   const supabase = createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl!,
+    supabaseAnonKey!,
     {
       cookies: {
         getAll() {

@@ -23,6 +23,19 @@ export default function RootRedirect() {
             router.replace("/auth/login");
             return;
           }
+          const { data: goalRow } = await supabase
+            .from("user_goals")
+            .select("user_id")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+          if (cancelled) return;
+          if (!goalRow) {
+            router.replace("/onboarding");
+            return;
+          }
+          router.replace("/dashboard");
+          return;
         } catch {
           router.replace("/auth/login");
           return;

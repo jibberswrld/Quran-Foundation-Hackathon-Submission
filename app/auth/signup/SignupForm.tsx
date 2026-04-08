@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { emailConfirmationRedirectUrl } from "@/lib/auth/email-confirmation";
+import ResendSignupEmail from "@/components/ResendSignupEmail";
 
 const AFTER_AUTH_PATH = "/onboarding";
 
@@ -45,11 +47,18 @@ export default function SignupForm() {
         email,
         password,
         options: {
-          emailRedirectTo: `${origin}/auth/callback?next=${encodeURIComponent(AFTER_AUTH_PATH)}`,
+          emailRedirectTo: emailConfirmationRedirectUrl(origin),
         },
       });
       if (signError) {
-        setError(signError.message);
+        const msg = signError.message ?? "";
+        if (/already\s+registered|already\s+been\s+registered|user\s+already\s+exists/i.test(msg)) {
+          setError(
+            "This email is already registered. Sign in instead, or use “Resend confirmation” below if you still need to verify your email."
+          );
+        } else {
+          setError(msg);
+        }
         return;
       }
       if (data.session) {
@@ -176,6 +185,10 @@ export default function SignupForm() {
             {loading ? "Creating account…" : "Create account & continue"}
           </button>
         </form>
+      </div>
+
+      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4">
+        <ResendSignupEmail key={email} defaultEmail={email} />
       </div>
 
       <details className="rounded-xl border border-zinc-800/60 bg-zinc-900/40 px-4 py-3 text-xs text-zinc-600">

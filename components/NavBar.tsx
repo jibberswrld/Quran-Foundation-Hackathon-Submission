@@ -36,6 +36,12 @@ export default function NavBar() {
           >
             Goals
           </Link>
+          <Link
+            href="/settings"
+            className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-400 transition-all hover:bg-white/[0.06] hover:text-zinc-100"
+          >
+            Settings
+          </Link>
         </div>
 
         {/* Auth */}

@@ -32,6 +32,7 @@ export default function OnboardingClient() {
   const [goalType, setGoalType] = useState<GoalType>("finish_in_days");
   const [goalValue, setGoalValue] = useState<number>(365);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   function handleTypeSelect(type: GoalType) {
     setGoalType(type);
@@ -45,6 +46,7 @@ export default function OnboardingClient() {
 
   async function handleSave() {
     setSaving(true);
+    setSaveError(null);
 
     const goal: UserGoal = {
       type: goalType,
@@ -60,10 +62,21 @@ export default function OnboardingClient() {
       // Silently continue; local-first state is already saved
     }
 
-    void upsertUserGoalAction(goal);
+    const remote = await upsertUserGoalAction(goal);
+    if (!remote.ok) {
+      setSaveError(
+        remote.message ??
+          (remote.reason === "not_authenticated"
+            ? "You must be signed in to finish setup."
+            : "Could not save your goal. Check your connection and try again.")
+      );
+      setSaving(false);
+      return;
+    }
 
     setSaving(false);
     router.push("/dashboard");
+    router.refresh();
   }
 
   const desc = GOAL_DESCRIPTIONS[goalType];
@@ -182,6 +195,11 @@ export default function OnboardingClient() {
               })}
             </p>
           </div>
+          {saveError && (
+            <p className="rounded-xl border border-red-900/40 bg-red-950/40 px-3 py-2.5 text-center text-sm text-red-400">
+              {saveError}
+            </p>
+          )}
           <button
             onClick={handleSave}
             disabled={saving}

@@ -189,3 +189,11 @@ export function setReflectionRemoteId(
   );
   setItem(KEYS.REFLECTIONS, updated);
 }
+
+/** Clear all Quran Coach local data (e.g. after account deletion or sign-out cleanup). */
+export function clearAllCoachLocalStorage(): void {
+  removeItem(KEYS.GOAL);
+  removeItem(KEYS.PROGRESS);
+  removeItem(KEYS.BOOKMARKS);
+  removeItem(KEYS.REFLECTIONS);
+}

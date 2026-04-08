@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import ResendSignupEmail from "@/components/ResendSignupEmail";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -147,6 +148,10 @@ export default function LoginForm() {
             {loading ? "Signing in…" : "Sign in"}
           </button>
         </form>
+      </div>
+
+      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4">
+        <ResendSignupEmail key={email} defaultEmail={email} />
       </div>
 
       <p className="text-center text-sm text-zinc-600">

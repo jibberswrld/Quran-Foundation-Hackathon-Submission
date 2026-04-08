@@ -8,9 +8,18 @@ export const metadata = {
 export default function DashboardPage() {
   return (
     <div className="page-container py-12">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-zinc-50">Dashboard</h1>
-        <p className="mt-1.5 text-sm text-zinc-500">Your reading journey at a glance.</p>
+      {/* Page header */}
+      <div className="mb-10 animate-fade-up">
+        <p className="section-label mb-2">Overview</p>
+        <h1
+          className="text-4xl font-bold tracking-tight"
+          style={{ color: "var(--text)" }}
+        >
+          Dashboard
+        </h1>
+        <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
+          Your reading journey at a glance.
+        </p>
       </div>
       <DashboardClient />
     </div>

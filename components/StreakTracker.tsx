@@ -7,36 +7,32 @@ interface StreakTrackerProps {
   goal: UserGoal | null;
 }
 
-function ProgressBar({ value, max }: { value: number; max: number }) {
-  const pct = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0;
-  return (
-    <div className="relative h-1 w-full overflow-hidden rounded-full bg-zinc-800">
-      <div
-        className="absolute inset-y-0 left-0 rounded-full bg-emerald-500 transition-all duration-500"
-        style={{
-          width: `${pct}%`,
-          boxShadow: pct > 0 ? "0 0 8px rgba(34,197,94,0.5)" : "none",
-        }}
-        role="progressbar"
-        aria-valuenow={value}
-        aria-valuemin={0}
-        aria-valuemax={max}
-        aria-label={`${pct}% complete`}
-      />
-    </div>
-  );
-}
-
 export default function StreakTracker({ progress, goal }: StreakTrackerProps) {
   if (!progress && !goal) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-zinc-800 p-8 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-2xl">
+      <div
+        className="flex flex-col items-center justify-center gap-4 rounded-2xl p-10 text-center"
+        style={{
+          border: "1px dashed rgba(255,255,255,0.1)",
+          background: "rgba(7,20,38,0.5)",
+        }}
+      >
+        <div
+          className="flex h-13 w-13 items-center justify-center rounded-2xl text-2xl"
+          style={{
+            border: "1px solid var(--border)",
+            background: "var(--bg-raised)",
+          }}
+        >
           📖
         </div>
         <div>
-          <p className="text-sm font-medium text-zinc-300">No progress yet</p>
-          <p className="mt-0.5 text-xs text-zinc-600">Set a goal to get started!</p>
+          <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>
+            No progress yet
+          </p>
+          <p className="mt-0.5 text-xs" style={{ color: "var(--text-dim)" }}>
+            Set a goal to begin your journey
+          </p>
         </div>
       </div>
     );
@@ -60,50 +56,132 @@ export default function StreakTracker({ progress, goal }: StreakTrackerProps) {
   const thisWeekRead =
     weeklyTarget > 0 ? totalRead % weeklyTarget : totalRead;
 
+  const weeklyPct =
+    weeklyTarget > 0
+      ? Math.min(100, Math.round((thisWeekRead / weeklyTarget) * 100))
+      : 0;
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
-          <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/10 text-base">
+        {/* Streak */}
+        <div
+          className="relative overflow-hidden rounded-2xl p-5 animate-fade-up"
+          style={{
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
+          }}
+        >
+          <div
+            className="absolute inset-x-0 top-0 h-px"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, rgba(201,162,39,0.3), transparent)",
+            }}
+          />
+          <div
+            className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl text-base"
+            style={{
+              border: "1px solid rgba(201,162,39,0.2)",
+              background: "rgba(201,162,39,0.08)",
+            }}
+          >
             🔥
           </div>
-          <p className="text-3xl font-bold tracking-tight text-zinc-50">
+          <p
+            className="text-3xl font-bold tracking-tight"
+            style={{ fontFamily: "var(--font-cinzel), serif", color: "var(--text)" }}
+          >
             {streakDays}
           </p>
-          <p className="mt-1 text-xs text-zinc-600">Day streak</p>
+          <p className="mt-1 text-xs" style={{ color: "var(--text-dim)" }}>
+            Day streak
+          </p>
         </div>
 
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
-          <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl border border-amber-500/20 bg-amber-500/10 text-base">
+        {/* Total verses */}
+        <div
+          className="relative overflow-hidden rounded-2xl p-5 animate-fade-up anim-delay-1"
+          style={{
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
+          }}
+        >
+          <div
+            className="absolute inset-x-0 top-0 h-px"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
+            }}
+          />
+          <div
+            className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl text-base"
+            style={{
+              border: "1px solid rgba(16,185,129,0.2)",
+              background: "rgba(16,185,129,0.07)",
+            }}
+          >
             📖
           </div>
-          <p className="text-3xl font-bold tracking-tight text-zinc-50">
+          <p
+            className="text-3xl font-bold tracking-tight"
+            style={{ fontFamily: "var(--font-cinzel), serif", color: "var(--text)" }}
+          >
             {totalRead.toLocaleString()}
           </p>
-          <p className="mt-1 text-xs text-zinc-600">Verses completed</p>
+          <p className="mt-1 text-xs" style={{ color: "var(--text-dim)" }}>
+            Verses completed
+          </p>
         </div>
       </div>
 
       {/* Weekly progress */}
       {goal && weeklyTarget > 0 && (
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+        <div
+          className="relative overflow-hidden rounded-2xl p-5 animate-fade-up anim-delay-2"
+          style={{
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
+          }}
+        >
+          <div
+            className="absolute inset-x-0 top-0 h-px"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, rgba(201,162,39,0.2), transparent)",
+            }}
+          />
           <div className="mb-3 flex items-center justify-between">
-            <span className="text-sm font-medium text-zinc-300">Weekly progress</span>
-            <span className="text-xs text-zinc-600">
+            <span className="text-sm font-medium" style={{ color: "var(--text)" }}>
+              Weekly progress
+            </span>
+            <span className="text-xs tabular-nums" style={{ color: "var(--text-dim)" }}>
               {thisWeekRead} / {weeklyTarget}
             </span>
           </div>
-          <ProgressBar value={thisWeekRead} max={weeklyTarget} />
-          <p className="mt-2.5 text-xs text-zinc-600">{weeklyLabel}</p>
+
+          {/* Progress bar */}
+          <div className="progress-track">
+            <div
+              className="progress-fill"
+              style={{ width: `${weeklyPct}%` }}
+              role="progressbar"
+              aria-valuenow={thisWeekRead}
+              aria-valuemin={0}
+              aria-valuemax={weeklyTarget}
+              aria-label={`${weeklyPct}% complete`}
+            />
+          </div>
+
+          <p className="mt-2.5 text-xs" style={{ color: "var(--text-dim)" }}>
+            {weeklyLabel}
+          </p>
         </div>
       )}
 
       {progress?.lastReadAt && (
-        <p className="text-right text-xs text-zinc-700">
+        <p className="text-right text-xs" style={{ color: "var(--text-dim)" }}>
           Last read{" "}
           {new Date(progress.lastReadAt).toLocaleDateString(undefined, {
             weekday: "short",

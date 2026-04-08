@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/lib/database.types";
-import { isSupabaseConfigured } from "./config";
+import { isDeployedWithoutSupabase, isSupabaseConfigured } from "./config";
 
 /**
  * Refreshes Auth cookies. When Supabase is configured:
@@ -13,6 +13,27 @@ export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
   });
+
+  const path = request.nextUrl.pathname;
+
+  if (isDeployedWithoutSupabase()) {
+    if (
+      path === "/auth/setup-required" ||
+      path.startsWith("/auth/setup-required/")
+    ) {
+      return supabaseResponse;
+    }
+    if (path.startsWith("/api/")) {
+      return NextResponse.json(
+        {
+          error:
+            "Server misconfiguration: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY on the host (e.g. Vercel → Project → Settings → Environment Variables), then redeploy.",
+        },
+        { status: 503 }
+      );
+    }
+    return NextResponse.redirect(new URL("/auth/setup-required", request.url));
+  }
 
   if (!isSupabaseConfigured()) {
     return supabaseResponse;
@@ -44,8 +65,6 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  const path = request.nextUrl.pathname;
 
   function forwardAuthCookies(res: NextResponse) {
     supabaseResponse.cookies.getAll().forEach((c) => {

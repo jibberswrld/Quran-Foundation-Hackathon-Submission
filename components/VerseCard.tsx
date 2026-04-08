@@ -14,17 +14,42 @@ export default function VerseCard({
   isBookmarked = false,
 }: VerseCardProps) {
   return (
-    <article className="relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
-      {/* Top edge highlight */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+    <article
+      className="animate-fade-up relative overflow-hidden rounded-2xl"
+      style={{
+        background: "var(--bg-card)",
+        border: "1px solid var(--border)",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.4), 0 12px 32px rgba(0,0,0,0.3)",
+      }}
+    >
+      {/* Gold top edge shimmer */}
+      <div
+        className="absolute inset-x-0 top-0 h-px"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent, rgba(201,162,39,0.5), transparent)",
+        }}
+      />
 
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-zinc-800/60 bg-zinc-950/40 px-5 py-3">
-        <span className="text-xs font-semibold tracking-widest text-emerald-400 uppercase">
+      <div
+        className="flex items-center justify-between px-5 py-3"
+        style={{
+          borderBottom: "1px solid rgba(255,255,255,0.06)",
+          background: "rgba(2,12,26,0.45)",
+        }}
+      >
+        <span
+          className="section-label"
+          style={{ color: "var(--gold)" }}
+        >
           {verse.verseKey}
         </span>
         <div className="flex items-center gap-4">
-          <div className="flex gap-3 text-xs text-zinc-600">
+          <div
+            className="flex gap-3 text-xs"
+            style={{ color: "var(--text-dim)" }}
+          >
             <span>Juz {verse.juzNumber}</span>
             <span>Page {verse.pageNumber}</span>
           </div>
@@ -32,11 +57,13 @@ export default function VerseCard({
             <button
               onClick={() => onBookmark(verse)}
               aria-label={isBookmarked ? "Remove bookmark" : "Bookmark verse"}
-              className={`text-lg transition-all duration-150 active:scale-90 ${
-                isBookmarked
-                  ? "text-emerald-400"
-                  : "text-zinc-700 hover:text-zinc-400"
-              }`}
+              className="text-xl transition-all duration-200 active:scale-90"
+              style={{
+                color: isBookmarked ? "var(--gold)" : "var(--text-dim)",
+                filter: isBookmarked
+                  ? "drop-shadow(0 0 6px rgba(201,162,39,0.6))"
+                  : "none",
+              }}
             >
               {isBookmarked ? "★" : "☆"}
             </button>
@@ -44,29 +71,52 @@ export default function VerseCard({
         </div>
       </div>
 
-      {/* Arabic text — hero element */}
+      {/* Arabic text */}
       <div
-        className="relative px-8 py-10 text-right"
+        className="relative px-8 py-12 text-right"
         style={{
           background:
-            "radial-gradient(ellipse at 65% 50%, rgba(34,197,94,0.05) 0%, transparent 65%)",
+            "radial-gradient(ellipse at 60% 50%, rgba(201,162,39,0.04) 0%, transparent 65%)",
         }}
       >
         <p
-          className="arabic text-4xl text-zinc-100 sm:text-5xl"
+          className="arabic text-4xl sm:text-5xl"
           lang="ar"
           dir="rtl"
+          style={{
+            color: "var(--text)",
+            textShadow: "0 0 40px rgba(201,162,39,0.08)",
+          }}
         >
           {verse.arabicText}
         </p>
       </div>
 
-      {/* Divider */}
-      <div className="mx-6 h-px bg-zinc-800/50" />
+      {/* Ornamental divider */}
+      <div className="mx-6 flex items-center gap-3">
+        <div
+          className="flex-1 h-px"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, rgba(201,162,39,0.25), transparent)",
+          }}
+        />
+        <span style={{ color: "var(--text-dim)", fontSize: "0.6rem" }}>✦</span>
+        <div
+          className="flex-1 h-px"
+          style={{
+            background:
+              "linear-gradient(90deg, transparent, rgba(201,162,39,0.25), transparent)",
+          }}
+        />
+      </div>
 
       {/* Translation */}
       <div className="px-6 py-5">
-        <p className="text-[15px] italic leading-relaxed text-zinc-400">
+        <p
+          className="text-[15px] italic leading-relaxed"
+          style={{ color: "var(--text-muted)" }}
+        >
           &ldquo;{verse.translation}&rdquo;
         </p>
       </div>

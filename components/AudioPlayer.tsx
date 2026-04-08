@@ -73,8 +73,24 @@ export default function AudioPlayer({ audioUrl, verseKey }: AudioPlayerProps) {
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 px-5 py-4">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
+    <div
+      className="relative overflow-hidden rounded-2xl px-5 py-4 animate-fade-up anim-delay-2"
+      style={{
+        background: "var(--bg-card)",
+        border: "1px solid var(--border)",
+      }}
+    >
+      {/* Top edge */}
+      <div
+        className="absolute inset-x-0 top-0 h-px"
+        style={{
+          background:
+            "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
+        }}
+      />
+
+      {/* Label */}
+      <p className="section-label mb-3">Recitation</p>
 
       <audio
         ref={audioRef}
@@ -94,28 +110,40 @@ export default function AudioPlayer({ audioUrl, verseKey }: AudioPlayerProps) {
           onClick={togglePlay}
           disabled={playState === "loading" || playState === "error"}
           aria-label={playState === "playing" ? "Pause recitation" : "Play recitation"}
-          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-500 text-emerald-950 transition-all hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-40 shadow-[0_0_0_1px_rgba(34,197,94,0.3),0_4px_12px_rgba(34,197,94,0.2)]"
+          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-40"
+          style={{
+            background:
+              "linear-gradient(135deg, #c9a227 0%, #a07d18 100%)",
+            boxShadow:
+              "0 0 0 1px rgba(201,162,39,0.4), 0 4px 16px rgba(201,162,39,0.2)",
+            color: "#1a0f00",
+          }}
         >
           {playState === "loading" ? (
-            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+            <svg
+              className="h-4 w-4"
+              style={{ animation: "spin 1s linear infinite" }}
+              viewBox="0 0 24 24"
+              fill="none"
+            >
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
             </svg>
           ) : playState === "playing" ? (
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-              <rect x="2" y="1" width="4" height="12" rx="1" />
-              <rect x="8" y="1" width="4" height="12" rx="1" />
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor">
+              <rect x="2" y="1" width="4" height="12" rx="1.5" />
+              <rect x="8" y="1" width="4" height="12" rx="1.5" />
             </svg>
           ) : (
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
-              <path d="M3 2l9 5-9 5V2z" />
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor">
+              <path d="M3.5 2.2l9.5 4.8-9.5 4.8V2.2z" />
             </svg>
           )}
         </button>
 
         {/* Scrubber */}
         <div className="flex-1 min-w-0">
-          <div className="relative mb-1.5">
+          <div className="relative mb-2">
             <input
               type="range"
               min={0}
@@ -125,13 +153,17 @@ export default function AudioPlayer({ audioUrl, verseKey }: AudioPlayerProps) {
               onChange={handleSeek}
               disabled={duration === 0}
               aria-label="Seek"
-              className="w-full h-1 cursor-pointer appearance-none rounded-full bg-zinc-700 disabled:cursor-not-allowed [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-emerald-400"
+              className="w-full h-1.5 cursor-pointer appearance-none rounded-full disabled:cursor-not-allowed"
               style={{
-                background: `linear-gradient(to right, #10b981 ${progress}%, #3f3f46 ${progress}%)`,
+                background: `linear-gradient(to right, #c9a227 ${progress}%, rgba(255,255,255,0.1) ${progress}%)`,
+                outline: "none",
               }}
             />
           </div>
-          <div className="flex justify-between text-xs text-zinc-600">
+          <div
+            className="flex justify-between text-xs"
+            style={{ color: "var(--text-dim)" }}
+          >
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
           </div>
@@ -139,7 +171,7 @@ export default function AudioPlayer({ audioUrl, verseKey }: AudioPlayerProps) {
       </div>
 
       {playState === "error" && (
-        <p className="mt-3 text-xs text-red-400">
+        <p className="mt-3 text-xs" style={{ color: "var(--red-text)" }}>
           Failed to load audio. Please check your connection and try again.
         </p>
       )}

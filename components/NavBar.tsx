@@ -3,45 +3,51 @@ import AuthNav from "@/components/AuthNav";
 
 export default function NavBar() {
   return (
-    <nav className="sticky top-0 z-30 border-b border-white/[0.06] bg-zinc-950/70 backdrop-blur-xl">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
+    <nav
+      className="sticky top-0 z-30"
+      style={{
+        borderBottom: "1px solid var(--border)",
+        background: "rgba(2, 12, 26, 0.82)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
+      }}
+    >
+      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
         {/* Logo */}
-        <Link
-          href="/"
-          className="flex items-center gap-2.5 text-[15px] font-bold tracking-tight text-zinc-50 hover:text-white transition-colors"
-        >
-          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 text-sm shadow-[0_0_0_1px_rgba(34,197,94,0.25),0_4px_12px_rgba(34,197,94,0.2)]">
+        <Link href="/" className="flex items-center gap-3 group">
+          <div
+            className="flex h-8 w-8 items-center justify-center rounded-[10px] text-base transition-all duration-300 group-hover:scale-105 animate-glow-pulse"
+            style={{
+              background: "linear-gradient(135deg, #c9a227 0%, #8f5500 100%)",
+              boxShadow:
+                "0 0 0 1px rgba(201,162,39,0.45), 0 4px 16px rgba(201,162,39,0.25)",
+            }}
+          >
             ☽
+          </div>
+          <span
+            className="text-sm font-semibold tracking-wide transition-colors duration-200"
+            style={{
+              fontFamily: "var(--font-cinzel), Cinzel, serif",
+              color: "var(--text)",
+            }}
+          >
+            Quran Coach
           </span>
-          Quran Coach
         </Link>
 
         {/* Nav links */}
-        <div className="flex items-center gap-1">
-          <Link
-            href="/dashboard"
-            className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-400 transition-all hover:bg-white/[0.06] hover:text-zinc-100"
-          >
-            Dashboard
-          </Link>
-          <Link
-            href="/read"
-            className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-400 transition-all hover:bg-white/[0.06] hover:text-zinc-100"
-          >
-            Read
-          </Link>
-          <Link
-            href="/onboarding"
-            className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-400 transition-all hover:bg-white/[0.06] hover:text-zinc-100"
-          >
-            Goals
-          </Link>
-          <Link
-            href="/settings"
-            className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-400 transition-all hover:bg-white/[0.06] hover:text-zinc-100"
-          >
-            Settings
-          </Link>
+        <div className="hidden sm:flex items-center gap-0.5">
+          {[
+            { href: "/dashboard", label: "Dashboard" },
+            { href: "/read",      label: "Read"      },
+            { href: "/onboarding",label: "Goals"     },
+            { href: "/settings",  label: "Settings"  },
+          ].map(({ href, label }) => (
+            <Link key={href} href={href} className="nav-link">
+              {label}
+            </Link>
+          ))}
         </div>
 
         {/* Auth */}

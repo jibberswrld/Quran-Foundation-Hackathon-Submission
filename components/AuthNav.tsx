@@ -46,12 +46,11 @@ export default function AuthNav() {
 
   if (!configured) return null;
 
-  // Loading skeleton
   if (user === undefined) {
     return (
-      <div className="flex items-center gap-2">
-        <div className="skeleton h-4 w-24 rounded" aria-hidden />
-        <div className="skeleton h-7 w-16 rounded-lg" aria-hidden />
+      <div className="flex items-center gap-2" aria-hidden>
+        <div className="skeleton h-3.5 w-20 rounded" />
+        <div className="skeleton h-7 w-16 rounded-lg" />
       </div>
     );
   }
@@ -59,15 +58,12 @@ export default function AuthNav() {
   if (!user) {
     return (
       <div className="flex items-center gap-2">
-        <Link
-          href="/auth/login"
-          className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-400 transition-all hover:bg-white/[0.06] hover:text-zinc-100"
-        >
+        <Link href="/auth/login" className="nav-link text-sm">
           Sign in
         </Link>
         <Link
           href="/auth/signup"
-          className="rounded-lg bg-emerald-500 px-3 py-1.5 text-sm font-semibold text-emerald-950 transition-all hover:bg-emerald-400 shadow-[0_0_0_1px_rgba(34,197,94,0.3)]"
+          className="btn-primary px-3.5 py-1.5 text-sm"
         >
           Sign up
         </Link>
@@ -78,7 +74,8 @@ export default function AuthNav() {
   return (
     <div className="flex items-center gap-3">
       <span
-        className="max-w-[140px] truncate text-xs text-zinc-600"
+        className="hidden sm:block max-w-[130px] truncate text-xs"
+        style={{ color: "var(--text-dim)" }}
         title={user.email ?? ""}
       >
         {user.email}
@@ -86,7 +83,7 @@ export default function AuthNav() {
       <button
         type="button"
         onClick={() => void handleSignOut()}
-        className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-400 transition-all hover:bg-white/[0.06] hover:text-zinc-100"
+        className="nav-link text-sm"
       >
         Sign out
       </button>

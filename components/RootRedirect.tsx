@@ -3,58 +3,17 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { loadLocalUserState } from "@/lib/storage";
-import { isSupabaseConfigured } from "@/lib/supabase/config";
-import { createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 export default function RootRedirect() {
   const router = useRouter();
 
   useEffect(() => {
-    let cancelled = false;
-
-    async function run() {
-      if (isSupabaseConfigured()) {
-        try {
-          const supabase = createBrowserSupabaseClient();
-          const {
-            data: { user },
-          } = await supabase.auth.getUser();
-          if (!user) {
-            router.replace("/auth/login");
-            return;
-          }
-          const { data: goalRow } = await supabase
-            .from("user_goals")
-            .select("user_id")
-            .eq("user_id", user.id)
-            .maybeSingle();
-
-          if (cancelled) return;
-          if (!goalRow) {
-            router.replace("/onboarding");
-            return;
-          }
-          router.replace("/dashboard");
-          return;
-        } catch {
-          router.replace("/auth/login");
-          return;
-        }
-      }
-
-      if (cancelled) return;
-      const state = loadLocalUserState();
-      if (state.goal) {
-        router.replace("/dashboard");
-      } else {
-        router.replace("/onboarding");
-      }
+    const state = loadLocalUserState();
+    if (state.goal) {
+      router.replace("/dashboard");
+    } else {
+      router.replace("/onboarding");
     }
-
-    void run();
-    return () => {
-      cancelled = true;
-    };
   }, [router]);
 
   return (

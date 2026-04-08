@@ -1,5 +1,4 @@
 import Link from "next/link";
-import AuthNav from "@/components/AuthNav";
 
 export default function NavBar() {
   return (
@@ -40,18 +39,14 @@ export default function NavBar() {
         <div className="hidden sm:flex items-center gap-0.5">
           {[
             { href: "/dashboard", label: "Dashboard" },
-            { href: "/read",      label: "Read"      },
-            { href: "/onboarding",label: "Goals"     },
-            { href: "/settings",  label: "Settings"  },
+            { href: "/read", label: "Read" },
+            { href: "/settings#reading-goal", label: "Settings" },
           ].map(({ href, label }) => (
             <Link key={href} href={href} className="nav-link">
               {label}
             </Link>
           ))}
         </div>
-
-        {/* Auth */}
-        <AuthNav />
       </div>
     </nav>
   );

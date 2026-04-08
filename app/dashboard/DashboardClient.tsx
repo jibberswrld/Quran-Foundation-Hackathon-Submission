@@ -108,7 +108,10 @@ export default function DashboardClient() {
                         "linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)",
                     }}
                   />
-                  <div className="flex-1 min-w-0">
+                  <Link
+                    href={`/read?verse=${encodeURIComponent(b.verseKey)}`}
+                    className="flex-1 min-w-0 text-left rounded-lg -m-1 p-1 transition-colors hover:bg-white/[0.03]"
+                  >
                     <p
                       className="mb-1 section-label"
                       style={{ color: "var(--gold)" }}
@@ -121,9 +124,17 @@ export default function DashboardClient() {
                     >
                       &ldquo;{b.translation}&rdquo;
                     </p>
-                  </div>
+                    <p className="mt-2 text-xs" style={{ color: "var(--text-dim)" }}>
+                      Open verse &amp; tafsir →
+                    </p>
+                  </Link>
                   <button
-                    onClick={() => handleRemoveBookmark(b.verseKey)}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handleRemoveBookmark(b.verseKey);
+                    }}
                     aria-label={`Remove bookmark for ${b.verseKey}`}
                     className="flex-shrink-0 text-lg mt-0.5 transition-colors duration-150"
                     style={{ color: "var(--text-dim)" }}
@@ -144,60 +155,6 @@ export default function DashboardClient() {
         </section>
       </div>
 
-      {/* Saved reflections */}
-      {userState.reflections.length > 0 && (
-        <section className="animate-fade-up anim-delay-3">
-          <p className="section-label mb-5">Saved Reflections</p>
-          <ul className="space-y-3">
-            {userState.reflections.map((r, i) => (
-              <li
-                key={`${r.verseKey}-${r.savedAt}`}
-                className="relative overflow-hidden rounded-2xl p-5 animate-fade-up"
-                style={{
-                  animationDelay: `${i * 80}ms`,
-                  background: "var(--bg-card)",
-                  border: "1px solid var(--border)",
-                }}
-              >
-                <div
-                  className="absolute inset-x-0 top-0 h-px"
-                  style={{
-                    background:
-                      "linear-gradient(90deg, transparent, rgba(201,162,39,0.2), transparent)",
-                  }}
-                />
-                <p
-                  className="mb-3 flex items-center gap-2"
-                  style={{ color: "var(--gold)" }}
-                >
-                  <span className="section-label" style={{ color: "var(--gold)" }}>
-                    {r.verseKey}
-                  </span>
-                  <span
-                    className="text-xs font-normal normal-case tracking-normal"
-                    style={{ color: "var(--text-dim)" }}
-                  >
-                    ·{" "}
-                    {new Date(r.savedAt).toLocaleDateString(undefined, {
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
-                </p>
-                <blockquote
-                  className="border-l-2 pl-4 text-sm italic leading-relaxed"
-                  style={{
-                    borderColor: "rgba(201,162,39,0.35)",
-                    color: "var(--text-muted)",
-                  }}
-                >
-                  {r.reflection}
-                </blockquote>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
     </div>
   );
 }

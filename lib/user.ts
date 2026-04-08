@@ -6,7 +6,7 @@
  * so the UI always remains usable even without a valid token.
  *
  * These helpers are designed to be called from client components or server
- * actions. They do NOT import lib/claude.ts (server-only).
+ * actions.
  */
 
 import type {

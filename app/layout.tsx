@@ -20,7 +20,7 @@ const cinzel = Cinzel({
 export const metadata: Metadata = {
   title: "Quran Coach",
   description:
-    "Your personal Quran reading companion — daily verses, streaks, reflections, and progress tracking.",
+    "Your personal Quran reading companion — daily verses, tafsir, streaks, and progress tracking.",
   icons: { icon: "/favicon.ico" },
 };
 
@@ -40,8 +40,7 @@ export default function RootLayout({
           className="py-5 text-center text-xs border-t"
           style={{ borderColor: "var(--border)", color: "var(--text-dim)" }}
         >
-          © {new Date().getFullYear()} Quran Coach · Powered by Quran
-          Foundation &amp; Claude
+          © {new Date().getFullYear()} Quran Coach · Quran.com Content API
         </footer>
       </body>
     </html>

@@ -138,24 +138,6 @@ export interface LocalUserState {
   reflections: SavedReflection[];
 }
 
-// ─── Claude API route types ──────────────────────────────────────────────────
-
-export interface ClaudeReflectionRequest {
-  verseKey: string;
-  arabicText: string;
-  translation: string;
-  tafsir: string | null;
-}
-
-export interface ClaudeReflectionResponse {
-  reflection: string;
-  verseKey: string;
-}
-
-export interface ClaudeApiError {
-  error: string;
-}
-
 // ─── Quran Foundation User API — raw shapes ──────────────────────────────────
 
 export interface QuranUserBookmark {

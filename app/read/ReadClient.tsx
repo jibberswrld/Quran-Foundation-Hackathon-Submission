@@ -1,19 +1,31 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import type { Verse, LocalUserState } from "@/lib/types";
-import { loadLocalUserState, addBookmark, addReflection, updateProgress } from "@/lib/storage";
-import { computeTodayVerseRange } from "@/lib/quran";
-import { fetchVerses } from "@/lib/quran";
+import { loadLocalUserState, addBookmark, updateProgress } from "@/lib/storage";
+import {
+  computeTodayVerseRange,
+  fetchVerses,
+  fetchVerseByKey,
+} from "@/lib/quran";
 import VerseCard from "@/components/VerseCard";
 import AudioPlayer from "@/components/AudioPlayer";
-import ReflectionBox from "@/components/ReflectionBox";
+import TafsirPanel from "@/components/TafsirPanel";
 
 type LoadState =
   | { status: "idle" }
   | { status: "loading" }
   | { status: "ready"; verses: Verse[] }
+  | { status: "focus"; verse: Verse }
   | { status: "error"; message: string };
+
+function parseVerseKey(raw: string | null): string | null {
+  if (!raw) return null;
+  const t = raw.trim();
+  return /^\d{1,3}:\d{1,3}$/.test(t) ? t : null;
+}
 
 function VerseCardSkeleton() {
   return (
@@ -24,7 +36,6 @@ function VerseCardSkeleton() {
         border: "1px solid var(--border)",
       }}
     >
-      {/* header */}
       <div
         className="flex items-center justify-between px-5 py-3"
         style={{
@@ -35,14 +46,15 @@ function VerseCardSkeleton() {
         <div className="skeleton h-3 w-16" />
         <div className="skeleton h-3 w-24" />
       </div>
-      {/* arabic block */}
       <div className="px-8 py-10 space-y-4">
         <div className="skeleton h-8 w-[85%] ml-auto" />
         <div className="skeleton h-8 w-[70%] ml-auto" />
         <div className="skeleton h-8 w-[50%] ml-auto" />
       </div>
-      {/* translation */}
-      <div className="px-6 py-5 space-y-2.5" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <div
+        className="px-6 py-5 space-y-2.5"
+        style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}
+      >
         <div className="skeleton h-3.5 w-full" />
         <div className="skeleton h-3.5 w-[88%]" />
         <div className="skeleton h-3.5 w-[72%]" />
@@ -52,6 +64,10 @@ function VerseCardSkeleton() {
 }
 
 export default function ReadClient() {
+  const searchParams = useSearchParams();
+  const verseParam = searchParams.get("verse");
+  const focusKey = useMemo(() => parseVerseKey(verseParam), [verseParam]);
+
   const [loadState, setLoadState] = useState<LoadState>({ status: "idle" });
   const [userState, setUserState] = useState<LocalUserState>({
     goal: null,
@@ -60,23 +76,57 @@ export default function ReadClient() {
     reflections: [],
   });
   const [activeIndex, setActiveIndex] = useState(0);
+  const [tafsirOpen, setTafsirOpen] = useState(false);
+  const tafsirAnchorRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setTafsirOpen(false);
+  }, [activeIndex]);
+
+  function scrollToTafsir() {
+    setTafsirOpen(true);
+    requestAnimationFrame(() => {
+      tafsirAnchorRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    });
+  }
 
   const load = useCallback(async () => {
     setLoadState({ status: "loading" });
     const state = loadLocalUserState();
     setUserState(state);
 
+    if (focusKey) {
+      try {
+        const verse = await fetchVerseByKey(focusKey);
+        setLoadState({ status: "focus", verse });
+      } catch (err) {
+        setLoadState({
+          status: "error",
+          message:
+            err instanceof Error ? err.message : "Failed to load that verse.",
+        });
+      }
+      return;
+    }
+
     if (!state.goal) {
       setLoadState({
         status: "error",
-        message: "No reading goal set. Go to Goals to create one.",
+        message: "No reading goal set. Add one in Settings.",
       });
       return;
     }
 
     try {
       const range = computeTodayVerseRange(state.goal, state.progress);
-      const verses = await fetchVerses(range.chapterId, range.verseFrom, range.verseTo);
+      const verses = await fetchVerses(
+        range.chapterId,
+        range.verseFrom,
+        range.verseTo
+      );
       setLoadState({ status: "ready", verses });
     } catch (err) {
       setLoadState({
@@ -84,7 +134,7 @@ export default function ReadClient() {
         message: err instanceof Error ? err.message : "Failed to load verses.",
       });
     }
-  }, []);
+  }, [focusKey]);
 
   useEffect(() => {
     load();
@@ -105,15 +155,6 @@ export default function ReadClient() {
     setUserState((prev) => ({ ...prev, bookmarks: updated }));
   }
 
-  function handleSaveReflection(verseKey: string, reflection: string) {
-    const updated = addReflection({
-      verseKey,
-      reflection,
-      savedAt: new Date().toISOString(),
-    });
-    setUserState((prev) => ({ ...prev, reflections: updated }));
-  }
-
   function handleNextVerse(verses: Verse[]) {
     if (activeIndex < verses.length - 1) {
       setActiveIndex((i) => i + 1);
@@ -127,7 +168,6 @@ export default function ReadClient() {
   if (loadState.status === "idle" || loadState.status === "loading") {
     return (
       <div className="space-y-5">
-        {/* Progress bar skeleton */}
         <div className="flex items-center gap-3">
           <div className="skeleton h-3 w-12 rounded" />
           <div
@@ -164,6 +204,45 @@ export default function ReadClient() {
     );
   }
 
+  if (loadState.status === "focus") {
+    const v = loadState.verse;
+    return (
+      <div className="space-y-5">
+        <div
+          className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between animate-fade-up"
+        >
+          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+            <span className="section-label" style={{ color: "var(--gold)" }}>
+              {v.verseKey}
+            </span>
+            <span className="mx-2" style={{ color: "var(--text-dim)" }}>
+              ·
+            </span>
+            Bookmarked verse — tafsir below
+          </p>
+          <Link
+            href="/read"
+            className="btn-primary inline-block py-2.5 px-4 text-center text-sm font-medium rounded-xl"
+          >
+            Today&apos;s reading →
+          </Link>
+        </div>
+
+        <VerseCard
+          verse={v}
+          onBookmark={handleBookmark}
+          isBookmarked={userState.bookmarks.some((b) => b.verseKey === v.verseKey)}
+        />
+
+        {v.audioUrl && (
+          <AudioPlayer audioUrl={v.audioUrl} verseKey={v.verseKey} />
+        )}
+
+        <TafsirPanel verse={v} defaultExpanded />
+      </div>
+    );
+  }
+
   const { verses } = loadState;
   const activeVerse = verses[activeIndex];
   const isComplete =
@@ -172,7 +251,6 @@ export default function ReadClient() {
 
   return (
     <div className="space-y-5">
-      {/* Progress bar */}
       <div className="flex items-center gap-3 animate-fade-up">
         <span className="text-xs tabular-nums" style={{ color: "var(--text-dim)" }}>
           {activeIndex + 1} / {verses.length}
@@ -195,14 +273,13 @@ export default function ReadClient() {
         </span>
       </div>
 
-      {/* Verse nav dots */}
       {verses.length > 1 && (
         <div className="flex gap-1.5 justify-center animate-fade-up anim-delay-1">
-          {verses.map((v, i) => (
+          {verses.map((verse, i) => (
             <button
-              key={v.verseKey}
+              key={verse.verseKey}
               onClick={() => setActiveIndex(i)}
-              aria-label={`Go to verse ${v.verseKey}`}
+              aria-label={`Go to verse ${verse.verseKey}`}
               className="rounded-full transition-all duration-300"
               style={{
                 height: "6px",
@@ -221,16 +298,15 @@ export default function ReadClient() {
         </div>
       )}
 
-      {/* Verse card */}
       <VerseCard
         verse={activeVerse}
         onBookmark={handleBookmark}
         isBookmarked={userState.bookmarks.some(
           (b) => b.verseKey === activeVerse.verseKey
         )}
+        onShowTafsir={scrollToTafsir}
       />
 
-      {/* Audio */}
       {activeVerse.audioUrl && (
         <AudioPlayer
           audioUrl={activeVerse.audioUrl}
@@ -238,10 +314,14 @@ export default function ReadClient() {
         />
       )}
 
-      {/* Reflection */}
-      <ReflectionBox verse={activeVerse} onSave={handleSaveReflection} />
+      <div ref={tafsirAnchorRef}>
+        <TafsirPanel
+          verse={activeVerse}
+          expanded={tafsirOpen}
+          onExpandedChange={setTafsirOpen}
+        />
+      </div>
 
-      {/* Navigation */}
       <div className="flex gap-3 pt-1 animate-fade-up anim-delay-4">
         {activeIndex > 0 && (
           <button
@@ -272,8 +352,8 @@ export default function ReadClient() {
           {activeIndex < verses.length - 1
             ? "Next verse →"
             : isComplete
-            ? "Session complete ✓"
-            : "Complete session →"}
+              ? "Session complete ✓"
+              : "Complete session →"}
         </button>
       </div>
     </div>

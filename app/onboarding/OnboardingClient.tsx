@@ -3,31 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { GoalType, UserGoal } from "@/lib/types";
+import { GOAL_DESCRIPTIONS } from "@/lib/goal-constants";
 import { saveGoal } from "@/lib/storage";
 import { syncGoalToApi } from "@/lib/user";
-import { upsertUserGoalAction } from "@/app/actions/user-data";
 
 type Step = "type" | "value" | "confirm";
-
-const GOAL_DESCRIPTIONS: Record<
-  GoalType,
-  { label: string; unit: string; min: number; max: number; defaultVal: number }
-> = {
-  finish_in_days: {
-    label: "Finish the Quran in",
-    unit: "days",
-    min: 30,
-    max: 3650,
-    defaultVal: 365,
-  },
-  memorize_per_week: {
-    label: "Memorise",
-    unit: "ayahs per week",
-    min: 1,
-    max: 100,
-    defaultVal: 5,
-  },
-};
 
 export default function OnboardingClient() {
   const router = useRouter();
@@ -35,7 +15,6 @@ export default function OnboardingClient() {
   const [goalType, setGoalType] = useState<GoalType>("finish_in_days");
   const [goalValue, setGoalValue] = useState<number>(365);
   const [saving, setSaving] = useState(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
 
   function handleTypeSelect(type: GoalType) {
     setGoalType(type);
@@ -49,7 +28,6 @@ export default function OnboardingClient() {
 
   async function handleSave() {
     setSaving(true);
-    setSaveError(null);
 
     const goal: UserGoal = {
       type: goalType,
@@ -63,18 +41,6 @@ export default function OnboardingClient() {
       await syncGoalToApi(goal);
     } catch {
       // Silently continue; local-first state is already saved
-    }
-
-    const remote = await upsertUserGoalAction(goal);
-    if (!remote.ok) {
-      setSaveError(
-        remote.message ??
-          (remote.reason === "not_authenticated"
-            ? "You must be signed in to finish setup."
-            : "Could not save your goal. Check your connection and try again.")
-      );
-      setSaving(false);
-      return;
     }
 
     setSaving(false);
@@ -302,19 +268,6 @@ export default function OnboardingClient() {
               })}
             </p>
           </div>
-
-          {saveError && (
-            <p
-              className="rounded-xl border px-3 py-2.5 text-center text-sm"
-              style={{
-                borderColor: "var(--red-border)",
-                background: "var(--red-bg)",
-                color: "var(--red-text)",
-              }}
-            >
-              {saveError}
-            </p>
-          )}
 
           <button
             onClick={handleSave}

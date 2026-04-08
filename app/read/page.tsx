@@ -1,9 +1,19 @@
+import { Suspense } from "react";
 import ReadClient from "./ReadClient";
 
 export const metadata = {
   title: "Daily Read · Quran Coach",
-  description: "Today's assigned verses, audio, and AI reflection.",
+  description: "Today's assigned verses, audio, and tafsir from the Quran.com Content API.",
 };
+
+function ReadFallback() {
+  return (
+    <div className="space-y-5 py-4">
+      <div className="skeleton h-8 w-48 rounded" />
+      <div className="skeleton h-64 w-full rounded-2xl" />
+    </div>
+  );
+}
 
 export default function ReadPage() {
   return (
@@ -17,10 +27,13 @@ export default function ReadPage() {
           Daily Read
         </h1>
         <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
-          Your assigned verses for today.
+          Your assigned verses and tafsir. Tap a bookmark on the dashboard to
+          open that ayah with commentary.
         </p>
       </div>
-      <ReadClient />
+      <Suspense fallback={<ReadFallback />}>
+        <ReadClient />
+      </Suspense>
     </div>
   );
 }

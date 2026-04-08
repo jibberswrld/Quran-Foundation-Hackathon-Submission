@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import DeleteAccountSection from "./DeleteAccountSection";
+import ClearLocalDataSection from "./ClearLocalDataSection";
+import GoalEditorSection from "@/components/GoalEditorSection";
 
 export const metadata: Metadata = {
   title: "Settings · Quran Coach",
@@ -24,13 +25,15 @@ export default function SettingsPage() {
           Settings
         </h1>
         <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
-          Manage your account. Your reading goal can be changed from Goals in the nav.
+          Update your reading plan. Your data stays on this device only.
         </p>
       </div>
 
-      <section className="animate-fade-up anim-delay-1">
-        <p className="section-label mb-4">Danger zone</p>
-        <DeleteAccountSection />
+      <GoalEditorSection />
+
+      <section className="animate-fade-up anim-delay-2">
+        <p className="section-label mb-4">Data on this device</p>
+        <ClearLocalDataSection />
       </section>
     </div>
   );

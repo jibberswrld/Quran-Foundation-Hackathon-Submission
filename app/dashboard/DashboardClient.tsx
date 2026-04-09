@@ -41,91 +41,75 @@ export default function DashboardClient() {
 
   return (
     <div className="space-y-10">
-      {/* Progress + CTA */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Progress */}
         <section className="animate-fade-up anim-delay-1">
-          <p className="section-label mb-4">Progress</p>
+          <p className="section-label mb-3">Progress</p>
           <StreakTracker progress={mergedProgress} goal={userState.goal} />
           <Link
             href="/read"
-            className="btn-primary mt-4 block w-full py-3 text-center text-sm"
+            className="btn-primary mt-4 block w-full py-2.5 text-center text-sm"
           >
-            Start today&apos;s reading →
+            Start today&apos;s reading &rarr;
           </Link>
         </section>
 
         {/* Bookmarks */}
         <section className="animate-fade-up anim-delay-2">
-          <p className="section-label mb-4">Bookmarked Verses</p>
+          <p className="section-label mb-3">Bookmarked verses</p>
 
           {userState.bookmarks.length === 0 ? (
             <div
-              className="flex flex-col items-center justify-center gap-4 rounded-2xl p-10 text-center"
+              className="flex flex-col items-center justify-center gap-3 rounded-xl p-10 text-center"
               style={{
-                border: "1px dashed rgba(255,255,255,0.1)",
-                background: "rgba(7,20,38,0.5)",
+                border: "1px dashed var(--border)",
+                background: "var(--bg-card)",
               }}
             >
-              <div
-                className="flex h-12 w-12 items-center justify-center rounded-xl text-xl"
-                style={{
-                  border: "1px solid var(--border)",
-                  background: "var(--bg-raised)",
-                }}
+              <p
+                className="text-sm font-medium"
+                style={{ color: "var(--text)" }}
               >
-                🔖
-              </div>
-              <div>
-                <p
-                  className="text-sm font-semibold"
-                  style={{ color: "var(--text)" }}
-                >
-                  No bookmarks yet
-                </p>
-                <p className="mt-0.5 text-xs" style={{ color: "var(--text-dim)" }}>
-                  Star a verse while reading to save it here.
-                </p>
-              </div>
+                No bookmarks yet
+              </p>
+              <p className="text-xs" style={{ color: "var(--text-dim)" }}>
+                Star a verse while reading to save it here.
+              </p>
             </div>
           ) : (
             <ul className="space-y-2">
               {userState.bookmarks.map((b, i) => (
                 <li
                   key={b.verseKey}
-                  className="group relative overflow-hidden rounded-xl flex gap-3 items-start transition-all duration-200 animate-fade-up"
+                  className="group overflow-hidden rounded-xl flex gap-3 items-start transition-all duration-150 animate-fade-up"
                   style={{
-                    animationDelay: `${i * 60}ms`,
+                    animationDelay: `${i * 50}ms`,
                     background: "var(--bg-card)",
                     border: "1px solid var(--border)",
-                    padding: "0.875rem 1rem",
+                    padding: "0.75rem 1rem",
                   }}
                 >
-                  <div
-                    className="absolute inset-x-0 top-0 h-px"
-                    style={{
-                      background:
-                        "linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)",
-                    }}
-                  />
                   <Link
                     href={`/read?verse=${encodeURIComponent(b.verseKey)}`}
-                    className="flex-1 min-w-0 text-left rounded-lg -m-1 p-1 transition-colors hover:bg-white/[0.03]"
+                    className="flex-1 min-w-0 text-left rounded-md -m-1 p-1 transition-colors hover:bg-white/[0.03]"
                   >
                     <p
-                      className="mb-1 section-label"
-                      style={{ color: "var(--gold)" }}
+                      className="mb-1 text-xs font-medium"
+                      style={{ color: "var(--text)" }}
                     >
                       {b.verseKey}
                     </p>
                     <p
-                      className="text-sm italic line-clamp-2"
+                      className="text-sm line-clamp-2"
                       style={{ color: "var(--text-muted)" }}
                     >
                       &ldquo;{b.translation}&rdquo;
                     </p>
-                    <p className="mt-2 text-xs" style={{ color: "var(--text-dim)" }}>
-                      Open verse &amp; reflection →
+                    <p
+                      className="mt-1.5 text-xs"
+                      style={{ color: "var(--text-dim)" }}
+                    >
+                      Open verse &rarr;
                     </p>
                   </Link>
                   <button
@@ -136,17 +120,30 @@ export default function DashboardClient() {
                       handleRemoveBookmark(b.verseKey);
                     }}
                     aria-label={`Remove bookmark for ${b.verseKey}`}
-                    className="flex-shrink-0 text-lg mt-0.5 transition-colors duration-150"
+                    className="flex-shrink-0 mt-0.5 transition-colors duration-150"
                     style={{ color: "var(--text-dim)" }}
                     onMouseEnter={(e) =>
-                      ((e.target as HTMLButtonElement).style.color = "#f87171")
+                      ((e.target as HTMLButtonElement).style.color =
+                        "var(--error)")
                     }
                     onMouseLeave={(e) =>
                       ((e.target as HTMLButtonElement).style.color =
                         "var(--text-dim)")
                     }
                   >
-                    ×
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
                   </button>
                 </li>
               ))}
@@ -154,7 +151,6 @@ export default function DashboardClient() {
           )}
         </section>
       </div>
-
     </div>
   );
 }

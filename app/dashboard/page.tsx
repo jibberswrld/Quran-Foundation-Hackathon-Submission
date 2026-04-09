@@ -7,12 +7,11 @@ export const metadata = {
 
 export default function DashboardPage() {
   return (
-    <div className="page-container py-12">
-      {/* Page header */}
-      <div className="mb-10 animate-fade-up">
+    <div className="page-container py-16">
+      <div className="mb-12 animate-fade-up">
         <p className="section-label mb-2">Overview</p>
         <h1
-          className="text-4xl font-bold tracking-tight"
+          className="text-4xl font-normal tracking-tight"
           style={{ color: "var(--text)" }}
         >
           Dashboard

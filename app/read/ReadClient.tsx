@@ -30,7 +30,7 @@ function parseVerseKey(raw: string | null): string | null {
 function VerseCardSkeleton() {
   return (
     <div
-      className="overflow-hidden rounded-2xl animate-fade-in"
+      className="overflow-hidden rounded-xl animate-fade-in"
       style={{
         background: "var(--bg-card)",
         border: "1px solid var(--border)",
@@ -38,26 +38,23 @@ function VerseCardSkeleton() {
     >
       <div
         className="flex items-center justify-between px-5 py-3"
-        style={{
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-          background: "rgba(2,12,26,0.45)",
-        }}
+        style={{ borderBottom: "1px solid var(--border)" }}
       >
-        <div className="skeleton h-3 w-16" />
-        <div className="skeleton h-3 w-24" />
+        <div className="skeleton h-3 w-14" />
+        <div className="skeleton h-3 w-20" />
       </div>
       <div className="px-8 py-10 space-y-4">
-        <div className="skeleton h-8 w-[85%] ml-auto" />
-        <div className="skeleton h-8 w-[70%] ml-auto" />
-        <div className="skeleton h-8 w-[50%] ml-auto" />
+        <div className="skeleton h-7 w-[85%] ml-auto" />
+        <div className="skeleton h-7 w-[70%] ml-auto" />
+        <div className="skeleton h-7 w-[50%] ml-auto" />
       </div>
       <div
-        className="px-6 py-5 space-y-2.5"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}
+        className="px-5 py-4 space-y-2"
+        style={{ borderTop: "1px solid var(--border)" }}
       >
-        <div className="skeleton h-3.5 w-full" />
-        <div className="skeleton h-3.5 w-[88%]" />
-        <div className="skeleton h-3.5 w-[72%]" />
+        <div className="skeleton h-3 w-full" />
+        <div className="skeleton h-3 w-[85%]" />
+        <div className="skeleton h-3 w-[70%]" />
       </div>
     </div>
   );
@@ -167,17 +164,17 @@ export default function ReadClient() {
 
   if (loadState.status === "idle" || loadState.status === "loading") {
     return (
-      <div className="space-y-5">
+      <div className="space-y-4">
         <div className="flex items-center gap-3">
           <div className="skeleton h-3 w-12 rounded" />
           <div
-            className="flex-1 h-1 rounded-full"
-            style={{ background: "rgba(255,255,255,0.05)" }}
+            className="flex-1 h-px"
+            style={{ background: "var(--border)" }}
           />
           <div className="skeleton h-3 w-10 rounded" />
         </div>
         <VerseCardSkeleton />
-        <div className="skeleton h-14 w-full rounded-2xl" />
+        <div className="skeleton h-12 w-full rounded-xl" />
       </div>
     );
   }
@@ -185,20 +182,20 @@ export default function ReadClient() {
   if (loadState.status === "error") {
     return (
       <div
-        className="rounded-2xl border p-6 text-sm space-y-3 animate-fade-in"
+        className="rounded-xl p-5 text-sm space-y-3 animate-fade-in"
         style={{
-          borderColor: "var(--red-border)",
-          background: "var(--red-bg)",
-          color: "var(--red-text)",
+          border: "1px solid var(--error-border)",
+          background: "var(--error-bg)",
+          color: "var(--error)",
         }}
       >
         <p>{loadState.message}</p>
         <button
           onClick={load}
-          className="text-sm transition-colors"
-          style={{ color: "var(--gold)" }}
+          className="text-sm font-medium transition-colors hover:underline"
+          style={{ color: "var(--text)" }}
         >
-          Retry →
+          Retry &rarr;
         </button>
       </div>
     );
@@ -207,31 +204,31 @@ export default function ReadClient() {
   if (loadState.status === "focus") {
     const v = loadState.verse;
     return (
-      <div className="space-y-5">
-        <div
-          className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between animate-fade-up"
-        >
+      <div className="space-y-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between animate-fade-up">
           <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-            <span className="section-label" style={{ color: "var(--gold)" }}>
+            <span className="font-medium" style={{ color: "var(--text)" }}>
               {v.verseKey}
             </span>
             <span className="mx-2" style={{ color: "var(--text-dim)" }}>
-              ·
+              /
             </span>
-            Bookmarked verse — reflection below
+            Bookmarked verse
           </p>
           <Link
             href="/read"
-            className="btn-primary inline-block py-2.5 px-4 text-center text-sm font-medium rounded-xl"
+            className="btn-primary py-2 px-4 text-sm"
           >
-            Today&apos;s reading →
+            Today&apos;s reading &rarr;
           </Link>
         </div>
 
         <VerseCard
           verse={v}
           onBookmark={handleBookmark}
-          isBookmarked={userState.bookmarks.some((b) => b.verseKey === v.verseKey)}
+          isBookmarked={userState.bookmarks.some(
+            (b) => b.verseKey === v.verseKey
+          )}
         />
 
         {v.audioUrl && (
@@ -250,48 +247,53 @@ export default function ReadClient() {
   const progressPct = ((activeIndex + 1) / verses.length) * 100;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
+      {/* Progress bar */}
       <div className="flex items-center gap-3 animate-fade-up">
-        <span className="text-xs tabular-nums" style={{ color: "var(--text-dim)" }}>
-          {activeIndex + 1} / {verses.length}
+        <span
+          className="text-xs tabular-nums"
+          style={{ color: "var(--text-dim)" }}
+        >
+          {activeIndex + 1}/{verses.length}
         </span>
         <div
-          className="relative flex-1 h-1 rounded-full"
-          style={{ background: "rgba(255,255,255,0.06)" }}
+          className="relative flex-1 h-px"
+          style={{ background: "var(--border)" }}
         >
           <div
-            className="absolute inset-y-0 left-0 rounded-full transition-all duration-500"
+            className="absolute inset-y-0 left-0 transition-all duration-500"
             style={{
               width: `${progressPct}%`,
-              background: "linear-gradient(90deg, #c9a227, #e8c96a)",
-              boxShadow: "0 0 8px rgba(201,162,39,0.5)",
+              height: "2px",
+              top: "-0.5px",
+              background: "var(--text)",
             }}
           />
         </div>
-        <span className="text-xs" style={{ color: "var(--text-dim)" }}>
+        <span
+          className="text-xs tabular-nums"
+          style={{ color: "var(--text-dim)" }}
+        >
           {activeVerse.verseKey}
         </span>
       </div>
 
+      {/* Dot indicators */}
       {verses.length > 1 && (
-        <div className="flex gap-1.5 justify-center animate-fade-up anim-delay-1">
+        <div className="flex gap-1 justify-center animate-fade-up anim-delay-1">
           {verses.map((verse, i) => (
             <button
               key={verse.verseKey}
               onClick={() => setActiveIndex(i)}
               aria-label={`Go to verse ${verse.verseKey}`}
-              className="rounded-full transition-all duration-300"
+              className="rounded-full transition-all duration-200"
               style={{
-                height: "6px",
-                width: i === activeIndex ? "18px" : "6px",
+                height: "4px",
+                width: i === activeIndex ? "16px" : "4px",
                 background:
                   i === activeIndex
-                    ? "linear-gradient(90deg, #c9a227, #e8c96a)"
+                    ? "var(--text)"
                     : "rgba(255,255,255,0.15)",
-                boxShadow:
-                  i === activeIndex
-                    ? "0 0 8px rgba(201,162,39,0.6)"
-                    : "none",
               }}
             />
           ))}
@@ -322,19 +324,20 @@ export default function ReadClient() {
         />
       </div>
 
+      {/* Navigation */}
       <div className="flex gap-3 pt-1 animate-fade-up anim-delay-4">
         {activeIndex > 0 && (
           <button
             onClick={() => setActiveIndex((i) => i - 1)}
-            className="btn-ghost flex-1 py-3 text-sm font-medium"
+            className="btn-ghost flex-1 py-2.5 text-sm"
           >
-            ← Previous
+            &larr; Previous
           </button>
         )}
         <button
           onClick={() => handleNextVerse(verses)}
           disabled={isComplete}
-          className={`flex-1 py-3 text-sm font-semibold rounded-xl transition-all duration-200 ${
+          className={`flex-1 py-2.5 text-sm font-medium rounded-lg transition-all duration-150 ${
             isComplete ? "" : "btn-primary"
           }`}
           style={
@@ -344,16 +347,15 @@ export default function ReadClient() {
                   border: "1px solid var(--border)",
                   color: "var(--text-dim)",
                   cursor: "default",
-                  borderRadius: "0.75rem",
                 }
               : {}
           }
         >
           {activeIndex < verses.length - 1
-            ? "Next verse →"
+            ? "Next verse \u2192"
             : isComplete
-              ? "Session complete ✓"
-              : "Complete session →"}
+              ? "Session complete"
+              : "Complete session \u2192"}
         </button>
       </div>
     </div>

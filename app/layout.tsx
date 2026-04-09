@@ -1,20 +1,21 @@
 import type { Metadata } from "next";
-import { DM_Sans, Cinzel } from "next/font/google";
+import { Outfit, Newsreader } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
 
-const dmSans = DM_Sans({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-dm-sans",
+  variable: "--font-outfit",
   display: "swap",
   weight: ["300", "400", "500", "600", "700"],
 });
 
-const cinzel = Cinzel({
+const newsreader = Newsreader({
   subsets: ["latin"],
-  variable: "--font-cinzel",
+  variable: "--font-newsreader",
   display: "swap",
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -31,20 +32,23 @@ export default function RootLayout({
     <html
       lang="en"
       dir="ltr"
-      className={`dark ${dmSans.variable} ${cinzel.variable}`}
+      className={`dark ${outfit.variable} ${newsreader.variable}`}
     >
       <body className="min-h-screen flex flex-col antialiased">
         <NavBar />
         <main className="flex-1">{children}</main>
         <footer
-          className="py-5 text-center text-xs border-t"
-          style={{ borderColor: "var(--border)", color: "var(--text-dim)" }}
+          className="py-6 text-center text-xs"
+          style={{
+            borderTop: "1px solid var(--border)",
+            color: "var(--text-dim)",
+          }}
         >
-          © {new Date().getFullYear()} Quran Coach · Quran Foundation data (Quran.com
-          API, same sources as{" "}
+          Quran Coach &middot; Quran Foundation data (Quran.com API, same
+          sources as{" "}
           <a
             href="https://mcp.quran.ai"
-            className="underline-offset-2 hover:underline"
+            className="underline-offset-2 hover:underline transition-colors"
             style={{ color: "var(--text-muted)" }}
             target="_blank"
             rel="noopener noreferrer"

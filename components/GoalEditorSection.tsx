@@ -41,25 +41,25 @@ export default function GoalEditorSection() {
     }
 
     setSaving(false);
-    setMessage("Reading goal saved on this device.");
+    setMessage("Reading goal saved.");
   }
 
   return (
     <section
       id="reading-goal"
-      className="animate-fade-up anim-delay-1 mb-12 scroll-mt-24"
+      className="animate-fade-up anim-delay-1 mb-10 scroll-mt-24"
     >
-      <p className="section-label mb-4">Reading goal</p>
+      <p className="section-label mb-3">Reading goal</p>
       <form
         onSubmit={handleSave}
-        className="space-y-5 rounded-2xl p-6"
+        className="space-y-5 rounded-xl p-5"
         style={{
           background: "var(--bg-card)",
           border: "1px solid var(--border)",
         }}
       >
         <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-          Change how much you read each day. Your streak and daily assignment use this.
+          Change how much you read each day.
         </p>
 
         <div className="flex flex-wrap gap-2">
@@ -71,13 +71,15 @@ export default function GoalEditorSection() {
                 setGoalType(t);
                 setGoalValue(GOAL_DESCRIPTIONS[t].defaultVal);
               }}
-              className="rounded-xl px-4 py-2 text-sm font-medium transition-all"
+              className="rounded-lg px-3.5 py-2 text-sm font-medium transition-all"
               style={{
-                background: goalType === t ? "rgba(201,162,39,0.15)" : "transparent",
+                background:
+                  goalType === t ? "var(--accent)" : "transparent",
+                color:
+                  goalType === t ? "var(--accent-fg)" : "var(--text-muted)",
                 border: `1px solid ${
-                  goalType === t ? "rgba(201,162,39,0.45)" : "var(--border)"
+                  goalType === t ? "transparent" : "var(--border)"
                 }`,
-                color: goalType === t ? "var(--gold)" : "var(--text-muted)",
               }}
             >
               {t === "finish_in_days" ? "Finish Quran" : "Memorise"}
@@ -86,7 +88,10 @@ export default function GoalEditorSection() {
         </div>
 
         <div>
-          <label className="mb-2 block text-xs font-medium" style={{ color: "var(--text-dim)" }}>
+          <label
+            className="mb-2 block text-xs font-medium"
+            style={{ color: "var(--text-dim)" }}
+          >
             {desc.label}
           </label>
           <div className="flex items-center gap-3">
@@ -96,12 +101,7 @@ export default function GoalEditorSection() {
               max={desc.max}
               value={goalValue}
               onChange={(e) => setGoalValue(Number(e.target.value))}
-              className="w-full max-w-[10rem] rounded-xl border px-4 py-2.5 text-sm outline-none transition-colors"
-              style={{
-                borderColor: "var(--border)",
-                background: "var(--bg-raised)",
-                color: "var(--text)",
-              }}
+              className="input-field max-w-[8rem] tabular-nums"
             />
             <span className="text-sm" style={{ color: "var(--text-muted)" }}>
               {desc.unit}
@@ -113,7 +113,7 @@ export default function GoalEditorSection() {
         </div>
 
         {message && (
-          <p className="text-sm" style={{ color: "var(--gold)" }}>
+          <p className="text-sm" style={{ color: "var(--success)" }}>
             {message}
           </p>
         )}
@@ -121,9 +121,9 @@ export default function GoalEditorSection() {
         <button
           type="submit"
           disabled={saving}
-          className="btn-primary w-full py-3 text-sm font-semibold disabled:opacity-60"
+          className="btn-primary w-full py-2.5 text-sm font-medium disabled:opacity-50"
         >
-          {saving ? "Saving…" : "Save goal"}
+          {saving ? "Saving..." : "Save goal"}
         </button>
       </form>
     </section>

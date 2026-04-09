@@ -74,22 +74,12 @@ export default function AudioPlayer({ audioUrl, verseKey }: AudioPlayerProps) {
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl px-5 py-4 animate-fade-up anim-delay-2"
+      className="overflow-hidden rounded-xl px-5 py-4 animate-fade-up anim-delay-2"
       style={{
         background: "var(--bg-card)",
         border: "1px solid var(--border)",
       }}
     >
-      {/* Top edge */}
-      <div
-        className="absolute inset-x-0 top-0 h-px"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
-        }}
-      />
-
-      {/* Label */}
       <p className="section-label mb-3">Recitation</p>
 
       <audio
@@ -105,18 +95,16 @@ export default function AudioPlayer({ audioUrl, verseKey }: AudioPlayerProps) {
       />
 
       <div className="flex items-center gap-4">
-        {/* Play / Pause button */}
         <button
           onClick={togglePlay}
           disabled={playState === "loading" || playState === "error"}
-          aria-label={playState === "playing" ? "Pause recitation" : "Play recitation"}
-          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-40"
+          aria-label={
+            playState === "playing" ? "Pause recitation" : "Play recitation"
+          }
+          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-40"
           style={{
-            background:
-              "linear-gradient(135deg, #c9a227 0%, #a07d18 100%)",
-            boxShadow:
-              "0 0 0 1px rgba(201,162,39,0.4), 0 4px 16px rgba(201,162,39,0.2)",
-            color: "#1a0f00",
+            background: "var(--accent)",
+            color: "var(--accent-fg)",
           }}
         >
           {playState === "loading" ? (
@@ -126,42 +114,59 @@ export default function AudioPlayer({ audioUrl, verseKey }: AudioPlayerProps) {
               viewBox="0 0 24 24"
               fill="none"
             >
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="3"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v8H4z"
+              />
             </svg>
           ) : playState === "playing" ? (
-            <svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor">
-              <rect x="2" y="1" width="4" height="12" rx="1.5" />
-              <rect x="8" y="1" width="4" height="12" rx="1.5" />
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="currentColor"
+            >
+              <rect x="2" y="1" width="3.5" height="12" rx="1" />
+              <rect x="8.5" y="1" width="3.5" height="12" rx="1" />
             </svg>
           ) : (
-            <svg width="13" height="13" viewBox="0 0 14 14" fill="currentColor">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="currentColor"
+            >
               <path d="M3.5 2.2l9.5 4.8-9.5 4.8V2.2z" />
             </svg>
           )}
         </button>
 
-        {/* Scrubber */}
         <div className="flex-1 min-w-0">
-          <div className="relative mb-2">
-            <input
-              type="range"
-              min={0}
-              max={duration || 0}
-              step={0.1}
-              value={currentTime}
-              onChange={handleSeek}
-              disabled={duration === 0}
-              aria-label="Seek"
-              className="w-full h-1.5 cursor-pointer appearance-none rounded-full disabled:cursor-not-allowed"
-              style={{
-                background: `linear-gradient(to right, #c9a227 ${progress}%, rgba(255,255,255,0.1) ${progress}%)`,
-                outline: "none",
-              }}
-            />
-          </div>
+          <input
+            type="range"
+            min={0}
+            max={duration || 0}
+            step={0.1}
+            value={currentTime}
+            onChange={handleSeek}
+            disabled={duration === 0}
+            aria-label="Seek"
+            className="w-full mb-1.5 disabled:cursor-not-allowed"
+            style={{
+              background: `linear-gradient(to right, var(--text) ${progress}%, var(--border) ${progress}%)`,
+            }}
+          />
           <div
-            className="flex justify-between text-xs"
+            className="flex justify-between text-xs tabular-nums"
             style={{ color: "var(--text-dim)" }}
           >
             <span>{formatTime(currentTime)}</span>
@@ -171,8 +176,8 @@ export default function AudioPlayer({ audioUrl, verseKey }: AudioPlayerProps) {
       </div>
 
       {playState === "error" && (
-        <p className="mt-3 text-xs" style={{ color: "var(--red-text)" }}>
-          Failed to load audio. Please check your connection and try again.
+        <p className="mt-3 text-xs" style={{ color: "var(--error)" }}>
+          Failed to load audio. Check your connection and try again.
         </p>
       )}
     </div>

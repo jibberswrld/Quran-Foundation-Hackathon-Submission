@@ -21,25 +21,21 @@ export default function ClearLocalDataSection() {
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl p-6"
+      className="rounded-xl p-5"
       style={{
-        border: "1px solid var(--red-border)",
-        background: "rgba(60,10,10,0.2)",
+        border: "1px solid var(--error-border)",
+        background: "var(--error-bg)",
       }}
     >
-      <div
-        className="absolute inset-x-0 top-0 h-px"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, rgba(248,113,113,0.3), transparent)",
-        }}
-      />
-      <h2 className="text-base font-semibold" style={{ color: "#f87171" }}>
+      <h2
+        className="text-sm font-medium"
+        style={{ color: "var(--error)" }}
+      >
         Reset local data
       </h2>
       <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
-        Remove your goal, reading progress, bookmarks, and reflections from this
-        browser. Nothing is stored on a server. This cannot be undone.
+        Remove your goal, reading progress, bookmarks, and reflections from
+        this browser. This cannot be undone.
       </p>
       <div className="mt-4">
         <label
@@ -49,8 +45,11 @@ export default function ClearLocalDataSection() {
         >
           Type{" "}
           <code
-            className="rounded px-1 font-mono"
-            style={{ background: "rgba(0,0,0,0.3)", color: "#f87171" }}
+            className="rounded px-1 py-0.5 font-mono text-xs"
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              color: "var(--error)",
+            }}
           >
             RESET
           </code>{" "}
@@ -70,14 +69,14 @@ export default function ClearLocalDataSection() {
         type="button"
         disabled={!canClear || loading}
         onClick={handleClear}
-        className="mt-4 w-full rounded-xl py-2.5 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+        className="mt-4 w-full rounded-lg py-2 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-30"
         style={{
-          border: "1px solid rgba(153,27,27,0.5)",
-          background: "rgba(80,10,10,0.4)",
-          color: "#fca5a5",
+          border: "1px solid var(--error-border)",
+          background: "rgba(239, 68, 68, 0.12)",
+          color: "var(--error)",
         }}
       >
-        {loading ? "Clearing…" : "Clear all data on this device"}
+        {loading ? "Clearing..." : "Clear all data"}
       </button>
     </div>
   );

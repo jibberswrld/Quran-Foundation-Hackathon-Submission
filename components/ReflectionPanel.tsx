@@ -6,9 +6,7 @@ import { fetchReflectionTafsir } from "@/lib/reflection";
 
 interface ReflectionPanelProps {
   verse: Verse;
-  /** When true (e.g. opened from a bookmark), show content expanded immediately */
   defaultExpanded?: boolean;
-  /** Controlled mode: parent drives open/closed (e.g. “tap verse for reflection”) */
   expanded?: boolean;
   onExpandedChange?: (open: boolean) => void;
 }
@@ -69,74 +67,79 @@ export default function ReflectionPanel({
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl animate-fade-up anim-delay-3"
+      className="overflow-hidden rounded-xl animate-fade-up anim-delay-3"
       style={{
         background: "var(--bg-card)",
         border: "1px solid var(--border)",
       }}
     >
-      <div
-        className="absolute inset-x-0 top-0 h-px"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
-        }}
-      />
-
       <button
         type="button"
         onClick={() => setExpanded(!expanded)}
-        className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors"
-        style={{ color: "var(--text)" }}
+        className="flex w-full items-center justify-between gap-3 px-5 py-3.5 text-left transition-colors hover:bg-white/[0.02]"
         aria-expanded={expanded}
       >
-        <div className="flex items-center gap-2.5 min-w-0">
-          <span
-            style={{
-              color: "var(--gold)",
-              fontSize: "1rem",
-              filter: "drop-shadow(0 0 6px rgba(201,162,39,0.5))",
-            }}
+        <div className="min-w-0">
+          <h3
+            className="text-sm font-medium"
+            style={{ color: "var(--text)" }}
           >
-            ✦
-          </span>
-          <div className="min-w-0">
-            <h3 className="text-sm font-semibold">Reflection</h3>
-            <p className="text-[11px] truncate" style={{ color: "var(--text-dim)" }}>
-              Tafsir (Ibn Kathir, English) · Quran Foundation / Quran.com
-            </p>
-          </div>
+            Reflection
+          </h3>
+          <p
+            className="text-xs mt-0.5 truncate"
+            style={{ color: "var(--text-dim)" }}
+          >
+            Tafsir Ibn Kathir &middot; Quran Foundation
+          </p>
         </div>
-        <span className="text-xs tabular-nums shrink-0" style={{ color: "var(--text-dim)" }}>
-          {expanded ? "Hide" : "Show"}
-        </span>
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="shrink-0 transition-transform duration-200"
+          style={{
+            color: "var(--text-dim)",
+            transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+          }}
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
       </button>
 
       {expanded && (
         <div
-          className="border-t px-5 pb-5 pt-1 animate-fade-in"
-          style={{ borderColor: "rgba(255,255,255,0.06)" }}
+          className="border-t px-5 pb-5 pt-3 animate-fade-in"
+          style={{ borderColor: "var(--border)" }}
         >
           {state.status === "loading" && (
-            <div className="space-y-2 py-3">
-              <div className="skeleton h-3.5 w-full" />
-              <div className="skeleton h-3.5 w-[92%]" />
-              <div className="skeleton h-3.5 w-[78%]" />
+            <div className="space-y-2 py-2">
+              <div className="skeleton h-3 w-full" />
+              <div className="skeleton h-3 w-[90%]" />
+              <div className="skeleton h-3 w-[75%]" />
             </div>
           )}
           {state.status === "error" && (
-            <p className="py-3 text-sm" style={{ color: "var(--red-text)" }}>
+            <p className="py-2 text-sm" style={{ color: "var(--error)" }}>
               {state.message}
             </p>
           )}
           {state.status === "ready" && !state.text && (
-            <p className="py-3 text-sm" style={{ color: "var(--text-muted)" }}>
-              No tafsir text is available for this verse in this resource.
+            <p
+              className="py-2 text-sm"
+              style={{ color: "var(--text-muted)" }}
+            >
+              No tafsir available for this verse.
             </p>
           )}
           {state.status === "ready" && state.text && (
             <div
-              className="max-h-[min(28rem,55vh)] overflow-y-auto pr-1 text-sm leading-relaxed"
+              className="max-h-[min(28rem,55vh)] overflow-y-auto text-sm leading-relaxed"
               style={{ color: "var(--text-muted)" }}
             >
               {state.text}

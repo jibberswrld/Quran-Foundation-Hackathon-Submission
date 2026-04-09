@@ -40,7 +40,7 @@ export default function OnboardingClient() {
     try {
       await syncGoalToApi(goal);
     } catch {
-      // Silently continue; local-first state is already saved
+      // local-first
     }
 
     setSaving(false);
@@ -49,46 +49,54 @@ export default function OnboardingClient() {
   }
 
   const desc = GOAL_DESCRIPTIONS[goalType];
+  const steps: Step[] = ["type", "value", "confirm"];
+  const currentStepIndex = steps.indexOf(step);
 
   return (
     <div className="w-full max-w-md animate-fade-up">
       {/* Header */}
       <div className="mb-10 text-center">
         <div
-          className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl text-3xl animate-glow-pulse"
+          className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-xl"
           style={{
-            background: "linear-gradient(135deg, #c9a227 0%, #8f5500 100%)",
-            boxShadow:
-              "0 0 0 1px rgba(201,162,39,0.4), 0 8px 28px rgba(201,162,39,0.25)",
+            border: "1px solid var(--border)",
+            background: "var(--bg-card)",
           }}
         >
-          ☽
+          <svg
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="var(--text)"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
         </div>
         <h1
-          className="text-3xl font-bold tracking-tight"
+          className="text-3xl font-normal tracking-tight"
           style={{ color: "var(--text)" }}
         >
           Welcome to Quran Coach
         </h1>
         <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
-          Set your reading goal and we&apos;ll build a personalised daily plan.
+          Set your reading goal and we&apos;ll build a daily plan.
         </p>
 
         {/* Step indicator */}
-        <div className="mt-5 flex items-center justify-center gap-2">
-          {(["type", "value", "confirm"] as Step[]).map((s, i) => (
+        <div className="mt-6 flex items-center justify-center gap-1.5">
+          {steps.map((s, i) => (
             <div
               key={s}
-              className="rounded-full transition-all duration-300"
+              className="rounded-full transition-all duration-200"
               style={{
-                height: "6px",
-                width: step === s ? "20px" : "6px",
+                height: "3px",
+                width: step === s ? "20px" : "3px",
                 background:
                   step === s
-                    ? "linear-gradient(90deg, #c9a227, #e8c96a)"
-                    : ["type", "value", "confirm"].indexOf(step) > i
-                    ? "rgba(201,162,39,0.4)"
-                    : "rgba(255,255,255,0.1)",
+                    ? "var(--text)"
+                    : currentStepIndex > i
+                      ? "rgba(255,255,255,0.3)"
+                      : "rgba(255,255,255,0.08)",
               }}
             />
           ))}
@@ -97,33 +105,29 @@ export default function OnboardingClient() {
 
       {/* Step: type */}
       {step === "type" && (
-        <div className="space-y-3 animate-fade-up">
-          <p className="section-label mb-4">What&apos;s your goal?</p>
+        <div className="space-y-2.5 animate-fade-up">
+          <p className="section-label mb-3">What&apos;s your goal?</p>
           {(Object.keys(GOAL_DESCRIPTIONS) as GoalType[]).map((type) => (
             <button
               key={type}
               onClick={() => handleTypeSelect(type)}
-              className="group w-full rounded-2xl text-left transition-all duration-200"
+              className="group w-full rounded-xl text-left transition-all duration-150"
               style={{
-                padding: "1.25rem",
+                padding: "1rem 1.25rem",
                 background: "var(--bg-card)",
                 border: "1px solid var(--border)",
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.borderColor =
-                  "var(--border-gold)";
-                (e.currentTarget as HTMLButtonElement).style.background =
-                  "rgba(201,162,39,0.04)";
+                e.currentTarget.style.borderColor = "var(--border-hover)";
+                e.currentTarget.style.background = "var(--bg-raised)";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.borderColor =
-                  "var(--border)";
-                (e.currentTarget as HTMLButtonElement).style.background =
-                  "var(--bg-card)";
+                e.currentTarget.style.borderColor = "var(--border)";
+                e.currentTarget.style.background = "var(--bg-card)";
               }}
             >
               <span
-                className="block font-semibold text-sm transition-colors"
+                className="block font-medium text-sm"
                 style={{ color: "var(--text)" }}
               >
                 {type === "finish_in_days"
@@ -131,7 +135,7 @@ export default function OnboardingClient() {
                   : "Memorise ayahs"}
               </span>
               <span
-                className="mt-1 block text-sm"
+                className="mt-0.5 block text-sm"
                 style={{ color: "var(--text-muted)" }}
               >
                 {type === "finish_in_days"
@@ -151,16 +155,16 @@ export default function OnboardingClient() {
             className="text-sm transition-colors"
             style={{ color: "var(--text-dim)" }}
             onMouseEnter={(e) =>
-              ((e.target as HTMLButtonElement).style.color = "var(--text-muted)")
+              ((e.target as HTMLButtonElement).style.color = "var(--text)")
             }
             onMouseLeave={(e) =>
               ((e.target as HTMLButtonElement).style.color = "var(--text-dim)")
             }
           >
-            ← Back
+            &larr; Back
           </button>
           <div
-            className="rounded-2xl p-6"
+            className="rounded-xl p-5"
             style={{
               background: "var(--bg-card)",
               border: "1px solid var(--border)",
@@ -178,34 +182,41 @@ export default function OnboardingClient() {
                 value={goalValue}
                 onChange={(e) =>
                   setGoalValue(
-                    Math.max(desc.min, Math.min(desc.max, Number(e.target.value)))
+                    Math.max(
+                      desc.min,
+                      Math.min(desc.max, Number(e.target.value))
+                    )
                   )
                 }
-                className="w-32 rounded-xl py-2 text-center text-2xl font-bold focus:outline-none"
+                className="w-28 rounded-lg py-2 text-center text-2xl font-semibold focus:outline-none tabular-nums"
                 style={{
-                  background: "rgba(2,12,26,0.8)",
-                  border: "1px solid var(--border-gold)",
-                  color: "var(--gold)",
-                  boxShadow: "0 0 0 3px rgba(201,162,39,0.08)",
-                  fontFamily: "var(--font-cinzel), serif",
+                  background: "var(--bg-raised)",
+                  border: "1px solid var(--border)",
+                  color: "var(--text)",
                 }}
               />
-              <span className="text-sm" style={{ color: "var(--text-muted)" }}>
+              <span
+                className="text-sm"
+                style={{ color: "var(--text-muted)" }}
+              >
                 {desc.unit}
               </span>
             </div>
             {goalType === "finish_in_days" && (
               <p className="mt-4 text-xs" style={{ color: "var(--text-dim)" }}>
                 That&apos;s roughly{" "}
-                <strong style={{ color: "var(--text-muted)" }}>
+                <span style={{ color: "var(--text-muted)" }}>
                   {Math.ceil(6236 / goalValue)} verses
-                </strong>{" "}
-                per day (6,236 total ayahs).
+                </span>{" "}
+                per day (6,236 total).
               </p>
             )}
           </div>
-          <button onClick={handleValueConfirm} className="btn-primary w-full py-3 text-sm">
-            Continue →
+          <button
+            onClick={handleValueConfirm}
+            className="btn-primary w-full py-2.5 text-sm"
+          >
+            Continue &rarr;
           </button>
         </div>
       )}
@@ -218,47 +229,37 @@ export default function OnboardingClient() {
             className="text-sm transition-colors"
             style={{ color: "var(--text-dim)" }}
             onMouseEnter={(e) =>
-              ((e.target as HTMLButtonElement).style.color = "var(--text-muted)")
+              ((e.target as HTMLButtonElement).style.color = "var(--text)")
             }
             onMouseLeave={(e) =>
               ((e.target as HTMLButtonElement).style.color = "var(--text-dim)")
             }
           >
-            ← Back
+            &larr; Back
           </button>
 
-          {/* Confirm card */}
           <div
-            className="relative overflow-hidden rounded-2xl p-6 text-center"
+            className="rounded-xl p-6 text-center"
             style={{
-              background: "rgba(201,162,39,0.05)",
-              border: "1px solid var(--border-gold)",
+              background: "var(--bg-card)",
+              border: "1px solid var(--border)",
             }}
           >
-            <div
-              className="absolute inset-x-0 top-0 h-px"
-              style={{
-                background:
-                  "linear-gradient(90deg, transparent, rgba(201,162,39,0.6), transparent)",
-              }}
-            />
             <p className="text-xs mb-2" style={{ color: "var(--text-dim)" }}>
               Your goal
             </p>
             <p
-              className="text-2xl font-bold tracking-tight"
-              style={{
-                fontFamily: "var(--font-cinzel), serif",
-                color: "var(--gold)",
-              }}
+              className="text-2xl font-normal tracking-tight"
+              style={{ color: "var(--text)" }}
             >
               {goalType === "finish_in_days"
                 ? `Finish in ${goalValue} days`
                 : `Memorise ${goalValue} ayahs / week`}
             </p>
-            <div className="ornament my-3">
-              <span className="text-xs">✦</span>
-            </div>
+            <div
+              className="my-4 h-px mx-auto w-12"
+              style={{ background: "var(--border)" }}
+            />
             <p className="text-xs" style={{ color: "var(--text-dim)" }}>
               Starting{" "}
               {new Date().toLocaleDateString(undefined, {
@@ -272,22 +273,22 @@ export default function OnboardingClient() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="btn-primary w-full py-3 text-sm"
+            className="btn-primary w-full py-2.5 text-sm"
           >
             {saving ? (
               <span className="flex items-center justify-center gap-2">
                 <span
-                  className="h-4 w-4 rounded-full border-2 border-t-transparent inline-block"
+                  className="h-3.5 w-3.5 rounded-full border-2 border-t-transparent inline-block"
                   style={{
-                    borderColor: "#1a0f00",
+                    borderColor: "var(--accent-fg)",
                     borderTopColor: "transparent",
                     animation: "spin 0.8s linear infinite",
                   }}
                 />
-                Saving…
+                Saving...
               </span>
             ) : (
-              "Start my journey →"
+              "Start my journey \u2192"
             )}
           </button>
         </div>

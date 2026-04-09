@@ -7,32 +7,27 @@ export default function NavBar() {
       className="sticky top-0 z-30"
       style={{
         borderBottom: "1px solid var(--border)",
-        background: "rgba(2, 12, 26, 0.82)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
+        background: "rgba(0, 0, 0, 0.8)",
+        backdropFilter: "saturate(180%) blur(20px)",
+        WebkitBackdropFilter: "saturate(180%) blur(20px)",
       }}
     >
-      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
-        {/* Logo */}
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
         <Link
           href="/"
-          className="flex items-center gap-3 group"
+          className="flex items-center gap-2.5 group"
           aria-label="Quran Coach home"
         >
           <BrandMark />
           <span
-            className="text-sm font-semibold tracking-wide transition-all duration-300 group-hover:tracking-[0.06em]"
-            style={{
-              fontFamily: "var(--font-cinzel), Cinzel, serif",
-              color: "var(--text)",
-            }}
+            className="text-sm font-medium tracking-tight"
+            style={{ color: "var(--text)" }}
           >
             Quran Coach
           </span>
         </Link>
 
-        {/* Nav links */}
-        <div className="hidden sm:flex items-center gap-0.5">
+        <div className="hidden sm:flex items-center gap-1">
           {[
             { href: "/dashboard", label: "Dashboard" },
             { href: "/read", label: "Read" },

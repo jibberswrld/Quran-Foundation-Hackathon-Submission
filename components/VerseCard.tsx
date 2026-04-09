@@ -6,7 +6,6 @@ interface VerseCardProps {
   verse: Verse;
   onBookmark?: (verse: Verse) => void;
   isBookmarked?: boolean;
-  /** When set, the translation is tappable to jump to reflection (tafsir) */
   onShowReflection?: () => void;
 }
 
@@ -18,39 +17,26 @@ export default function VerseCard({
 }: VerseCardProps) {
   return (
     <article
-      className="animate-fade-up relative overflow-hidden rounded-2xl"
+      className="animate-fade-up overflow-hidden rounded-xl"
       style={{
         background: "var(--bg-card)",
         border: "1px solid var(--border)",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.4), 0 12px 32px rgba(0,0,0,0.3)",
       }}
     >
-      {/* Gold top edge shimmer */}
-      <div
-        className="absolute inset-x-0 top-0 h-px"
-        style={{
-          background:
-            "linear-gradient(90deg, transparent, rgba(201,162,39,0.5), transparent)",
-        }}
-      />
-
       {/* Header */}
       <div
         className="flex items-center justify-between px-5 py-3"
-        style={{
-          borderBottom: "1px solid rgba(255,255,255,0.06)",
-          background: "rgba(2,12,26,0.45)",
-        }}
+        style={{ borderBottom: "1px solid var(--border)" }}
       >
         <span
-          className="section-label"
-          style={{ color: "var(--gold)" }}
+          className="text-xs font-medium tabular-nums"
+          style={{ color: "var(--text)" }}
         >
           {verse.verseKey}
         </span>
         <div className="flex items-center gap-4">
           <div
-            className="flex gap-3 text-xs"
+            className="flex gap-3 text-xs tabular-nums"
             style={{ color: "var(--text-dim)" }}
           >
             <span>Juz {verse.juzNumber}</span>
@@ -60,81 +46,65 @@ export default function VerseCard({
             <button
               onClick={() => onBookmark(verse)}
               aria-label={isBookmarked ? "Remove bookmark" : "Bookmark verse"}
-              className="text-xl transition-all duration-200 active:scale-90"
-              style={{
-                color: isBookmarked ? "var(--gold)" : "var(--text-dim)",
-                filter: isBookmarked
-                  ? "drop-shadow(0 0 6px rgba(201,162,39,0.6))"
-                  : "none",
-              }}
+              className="transition-colors duration-150"
+              style={{ color: isBookmarked ? "var(--text)" : "var(--text-dim)" }}
             >
-              {isBookmarked ? "★" : "☆"}
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill={isBookmarked ? "currentColor" : "none"}
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
             </button>
           )}
         </div>
       </div>
 
       {/* Arabic text */}
-      <div
-        className="relative px-8 py-12 text-right"
-        style={{
-          background:
-            "radial-gradient(ellipse at 60% 50%, rgba(201,162,39,0.04) 0%, transparent 65%)",
-        }}
-      >
+      <div className="px-8 py-10 text-right">
         <p
-          className="arabic text-4xl sm:text-5xl"
+          className="arabic text-3xl sm:text-4xl"
           lang="ar"
           dir="rtl"
-          style={{
-            color: "var(--text)",
-            textShadow: "0 0 40px rgba(201,162,39,0.08)",
-          }}
+          style={{ color: "var(--text)" }}
         >
           {verse.arabicText}
         </p>
       </div>
 
-      {/* Ornamental divider */}
-      <div className="mx-6 flex items-center gap-3">
-        <div
-          className="flex-1 h-px"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, rgba(201,162,39,0.25), transparent)",
-          }}
-        />
-        <span style={{ color: "var(--text-dim)", fontSize: "0.6rem" }}>✦</span>
-        <div
-          className="flex-1 h-px"
-          style={{
-            background:
-              "linear-gradient(90deg, transparent, rgba(201,162,39,0.25), transparent)",
-          }}
-        />
-      </div>
+      {/* Divider */}
+      <div className="mx-5 h-px" style={{ background: "var(--border)" }} />
 
       {/* Translation */}
-      <div className="px-6 py-5">
+      <div className="px-5 py-4">
         {onShowReflection ? (
           <button
             type="button"
             onClick={onShowReflection}
-            className="w-full rounded-xl text-left transition-colors hover:bg-white/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 -m-2 p-2"
+            className="w-full text-left rounded-lg transition-colors hover:bg-white/[0.03] -m-1.5 p-1.5"
           >
             <p
-              className="text-[15px] italic leading-relaxed"
+              className="text-sm leading-relaxed"
               style={{ color: "var(--text-muted)" }}
             >
               &ldquo;{verse.translation}&rdquo;
             </p>
-            <p className="mt-2 text-xs font-medium" style={{ color: "var(--gold)" }}>
-              Tap for reflection →
+            <p
+              className="mt-2 text-xs font-medium"
+              style={{ color: "var(--text)" }}
+            >
+              View reflection &rarr;
             </p>
           </button>
         ) : (
           <p
-            className="text-[15px] italic leading-relaxed"
+            className="text-sm leading-relaxed"
             style={{ color: "var(--text-muted)" }}
           >
             &ldquo;{verse.translation}&rdquo;

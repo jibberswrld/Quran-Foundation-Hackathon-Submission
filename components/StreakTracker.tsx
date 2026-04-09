@@ -11,29 +11,18 @@ export default function StreakTracker({ progress, goal }: StreakTrackerProps) {
   if (!progress && !goal) {
     return (
       <div
-        className="flex flex-col items-center justify-center gap-4 rounded-2xl p-10 text-center"
+        className="flex flex-col items-center justify-center gap-3 rounded-xl p-10 text-center"
         style={{
-          border: "1px dashed rgba(255,255,255,0.1)",
-          background: "rgba(7,20,38,0.5)",
+          border: "1px dashed var(--border)",
+          background: "var(--bg-card)",
         }}
       >
-        <div
-          className="flex h-13 w-13 items-center justify-center rounded-2xl text-2xl"
-          style={{
-            border: "1px solid var(--border)",
-            background: "var(--bg-raised)",
-          }}
-        >
-          📖
-        </div>
-        <div>
-          <p className="text-sm font-semibold" style={{ color: "var(--text)" }}>
-            No progress yet
-          </p>
-          <p className="mt-0.5 text-xs" style={{ color: "var(--text-dim)" }}>
-            Set a goal to begin your journey
-          </p>
-        </div>
+        <p className="text-sm font-medium" style={{ color: "var(--text)" }}>
+          No progress yet
+        </p>
+        <p className="text-xs" style={{ color: "var(--text-dim)" }}>
+          Set a goal to begin your journey
+        </p>
       </div>
     );
   }
@@ -65,73 +54,41 @@ export default function StreakTracker({ progress, goal }: StreakTrackerProps) {
     <div className="space-y-3">
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-3">
-        {/* Streak */}
         <div
-          className="relative overflow-hidden rounded-2xl p-5 animate-fade-up"
+          className="rounded-xl p-4 animate-fade-up"
           style={{
             background: "var(--bg-card)",
             border: "1px solid var(--border)",
           }}
         >
-          <div
-            className="absolute inset-x-0 top-0 h-px"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent, rgba(201,162,39,0.3), transparent)",
-            }}
-          />
-          <div
-            className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl text-base"
-            style={{
-              border: "1px solid rgba(201,162,39,0.2)",
-              background: "rgba(201,162,39,0.08)",
-            }}
-          >
-            🔥
-          </div>
+          <p className="section-label mb-3">Streak</p>
           <p
-            className="text-3xl font-bold tracking-tight"
-            style={{ fontFamily: "var(--font-cinzel), serif", color: "var(--text)" }}
+            className="text-3xl font-semibold tracking-tight tabular-nums"
+            style={{ color: "var(--text)" }}
           >
             {streakDays}
           </p>
           <p className="mt-1 text-xs" style={{ color: "var(--text-dim)" }}>
-            Day streak
+            days
           </p>
         </div>
 
-        {/* Total verses */}
         <div
-          className="relative overflow-hidden rounded-2xl p-5 animate-fade-up anim-delay-1"
+          className="rounded-xl p-4 animate-fade-up anim-delay-1"
           style={{
             background: "var(--bg-card)",
             border: "1px solid var(--border)",
           }}
         >
-          <div
-            className="absolute inset-x-0 top-0 h-px"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)",
-            }}
-          />
-          <div
-            className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl text-base"
-            style={{
-              border: "1px solid rgba(16,185,129,0.2)",
-              background: "rgba(16,185,129,0.07)",
-            }}
-          >
-            📖
-          </div>
+          <p className="section-label mb-3">Verses read</p>
           <p
-            className="text-3xl font-bold tracking-tight"
-            style={{ fontFamily: "var(--font-cinzel), serif", color: "var(--text)" }}
+            className="text-3xl font-semibold tracking-tight tabular-nums"
+            style={{ color: "var(--text)" }}
           >
             {totalRead.toLocaleString()}
           </p>
           <p className="mt-1 text-xs" style={{ color: "var(--text-dim)" }}>
-            Verses completed
+            total
           </p>
         </div>
       </div>
@@ -139,29 +96,27 @@ export default function StreakTracker({ progress, goal }: StreakTrackerProps) {
       {/* Weekly progress */}
       {goal && weeklyTarget > 0 && (
         <div
-          className="relative overflow-hidden rounded-2xl p-5 animate-fade-up anim-delay-2"
+          className="rounded-xl p-4 animate-fade-up anim-delay-2"
           style={{
             background: "var(--bg-card)",
             border: "1px solid var(--border)",
           }}
         >
-          <div
-            className="absolute inset-x-0 top-0 h-px"
-            style={{
-              background:
-                "linear-gradient(90deg, transparent, rgba(201,162,39,0.2), transparent)",
-            }}
-          />
           <div className="mb-3 flex items-center justify-between">
-            <span className="text-sm font-medium" style={{ color: "var(--text)" }}>
+            <span
+              className="text-sm font-medium"
+              style={{ color: "var(--text)" }}
+            >
               Weekly progress
             </span>
-            <span className="text-xs tabular-nums" style={{ color: "var(--text-dim)" }}>
+            <span
+              className="text-xs tabular-nums"
+              style={{ color: "var(--text-dim)" }}
+            >
               {thisWeekRead} / {weeklyTarget}
             </span>
           </div>
 
-          {/* Progress bar */}
           <div className="progress-track">
             <div
               className="progress-fill"
@@ -181,7 +136,10 @@ export default function StreakTracker({ progress, goal }: StreakTrackerProps) {
       )}
 
       {progress?.lastReadAt && (
-        <p className="text-right text-xs" style={{ color: "var(--text-dim)" }}>
+        <p
+          className="text-right text-xs"
+          style={{ color: "var(--text-dim)" }}
+        >
           Last read{" "}
           {new Date(progress.lastReadAt).toLocaleDateString(undefined, {
             weekday: "short",

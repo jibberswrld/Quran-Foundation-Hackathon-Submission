@@ -1,4 +1,5 @@
 import Link from "next/link";
+import BrandMark from "@/components/BrandMark";
 
 export default function NavBar() {
   return (
@@ -13,19 +14,14 @@ export default function NavBar() {
     >
       <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div
-            className="flex h-8 w-8 items-center justify-center rounded-[10px] text-base transition-all duration-300 group-hover:scale-105 animate-glow-pulse"
-            style={{
-              background: "linear-gradient(135deg, #c9a227 0%, #8f5500 100%)",
-              boxShadow:
-                "0 0 0 1px rgba(201,162,39,0.45), 0 4px 16px rgba(201,162,39,0.25)",
-            }}
-          >
-            ☽
-          </div>
+        <Link
+          href="/"
+          className="flex items-center gap-3 group"
+          aria-label="Quran Coach home"
+        >
+          <BrandMark />
           <span
-            className="text-sm font-semibold tracking-wide transition-colors duration-200"
+            className="text-sm font-semibold tracking-wide transition-all duration-300 group-hover:tracking-[0.06em]"
             style={{
               fontFamily: "var(--font-cinzel), Cinzel, serif",
               color: "var(--text)",

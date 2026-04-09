@@ -12,7 +12,7 @@ import {
 } from "@/lib/quran";
 import VerseCard from "@/components/VerseCard";
 import AudioPlayer from "@/components/AudioPlayer";
-import TafsirPanel from "@/components/TafsirPanel";
+import ReflectionPanel from "@/components/ReflectionPanel";
 
 type LoadState =
   | { status: "idle" }
@@ -76,17 +76,17 @@ export default function ReadClient() {
     reflections: [],
   });
   const [activeIndex, setActiveIndex] = useState(0);
-  const [tafsirOpen, setTafsirOpen] = useState(false);
-  const tafsirAnchorRef = useRef<HTMLDivElement>(null);
+  const [reflectionOpen, setReflectionOpen] = useState(false);
+  const reflectionAnchorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setTafsirOpen(false);
+    setReflectionOpen(false);
   }, [activeIndex]);
 
-  function scrollToTafsir() {
-    setTafsirOpen(true);
+  function scrollToReflection() {
+    setReflectionOpen(true);
     requestAnimationFrame(() => {
-      tafsirAnchorRef.current?.scrollIntoView({
+      reflectionAnchorRef.current?.scrollIntoView({
         behavior: "smooth",
         block: "nearest",
       });
@@ -218,7 +218,7 @@ export default function ReadClient() {
             <span className="mx-2" style={{ color: "var(--text-dim)" }}>
               ·
             </span>
-            Bookmarked verse — tafsir below
+            Bookmarked verse — reflection below
           </p>
           <Link
             href="/read"
@@ -238,7 +238,7 @@ export default function ReadClient() {
           <AudioPlayer audioUrl={v.audioUrl} verseKey={v.verseKey} />
         )}
 
-        <TafsirPanel verse={v} defaultExpanded />
+        <ReflectionPanel verse={v} defaultExpanded />
       </div>
     );
   }
@@ -304,7 +304,7 @@ export default function ReadClient() {
         isBookmarked={userState.bookmarks.some(
           (b) => b.verseKey === activeVerse.verseKey
         )}
-        onShowTafsir={scrollToTafsir}
+        onShowReflection={scrollToReflection}
       />
 
       {activeVerse.audioUrl && (
@@ -314,11 +314,11 @@ export default function ReadClient() {
         />
       )}
 
-      <div ref={tafsirAnchorRef}>
-        <TafsirPanel
+      <div ref={reflectionAnchorRef}>
+        <ReflectionPanel
           verse={activeVerse}
-          expanded={tafsirOpen}
-          onExpandedChange={setTafsirOpen}
+          expanded={reflectionOpen}
+          onExpandedChange={setReflectionOpen}
         />
       </div>
 

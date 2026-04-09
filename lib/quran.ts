@@ -260,9 +260,27 @@ export async function fetchVerseAudioUrl(
 }
 
 // ─── Tafsir fetchers ──────────────────────────────────────────────────────────
+// Same Quran Foundation catalogue used by the official Quran MCP (mcp.quran.ai).
 
-interface TafsirResponse {
-  tafsirs: QuranApiTafsir[];
+/** `GET /tafsirs/{id}/by_chapter/{chapter}` — array of per-ayah records */
+interface TafsirChapterResponse {
+  tafsirs?: QuranApiTafsir[] | null;
+}
+
+/**
+ * `GET /tafsirs/{resource_id}/by_ayah/{ayah_key}` (e.g. `2:255`).
+ * Current API returns a single `tafsir` object with HTML `text` and a `verses` map;
+ * older responses used a `tafsirs` array. See:
+ * https://api-docs.quran.foundation/docs/content_apis_versioned/list-ayah-tafsirs/
+ */
+interface TafsirByAyahResponse {
+  tafsir?: {
+    text?: string;
+    verses?: Record<string, { id?: number }>;
+    resource_id?: number;
+    resource_name?: string;
+  } | null;
+  tafsirs?: QuranApiTafsir[] | null;
 }
 
 /**
@@ -273,15 +291,17 @@ export async function fetchVerseTafsir(
   verseKey: string,
   tafsirId: number = DEFAULT_TAFSIR_ID
 ): Promise<string | null> {
-  const data = await quranFetch<TafsirResponse>(
+  const data = await quranFetch<TafsirByAyahResponse>(
     `/tafsirs/${tafsirId}/by_ayah/${verseKey}`
   );
 
-  const tafsir = data.tafsirs.find((t) => t.verse_key === verseKey);
-  if (!tafsir) return null;
+  const embedded = data.tafsir?.text?.trim();
+  if (embedded) return stripHtml(embedded);
 
-  // Strip basic HTML tags often present in tafsir text
-  return stripHtml(tafsir.text);
+  const list = data.tafsirs ?? [];
+  const row = list.find((t) => t.verse_key === verseKey);
+  if (!row?.text) return null;
+  return stripHtml(row.text);
 }
 
 /**
@@ -292,13 +312,13 @@ export async function fetchChapterTafsir(
   chapterId: number,
   tafsirId: number = DEFAULT_TAFSIR_ID
 ): Promise<Map<string, string>> {
-  const data = await quranFetch<TafsirResponse>(
+  const data = await quranFetch<TafsirChapterResponse>(
     `/tafsirs/${tafsirId}/by_chapter/${chapterId}`
   );
 
   const map = new Map<string, string>();
-  for (const t of data.tafsirs) {
-    map.set(t.verse_key, stripHtml(t.text));
+  for (const t of data.tafsirs ?? []) {
+    if (t.verse_key && t.text) map.set(t.verse_key, stripHtml(t.text));
   }
   return map;
 }

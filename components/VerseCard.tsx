@@ -6,15 +6,15 @@ interface VerseCardProps {
   verse: Verse;
   onBookmark?: (verse: Verse) => void;
   isBookmarked?: boolean;
-  /** When set, the translation is tappable to jump to tafsir (daily read) */
-  onShowTafsir?: () => void;
+  /** When set, the translation is tappable to jump to reflection (tafsir) */
+  onShowReflection?: () => void;
 }
 
 export default function VerseCard({
   verse,
   onBookmark,
   isBookmarked = false,
-  onShowTafsir,
+  onShowReflection,
 }: VerseCardProps) {
   return (
     <article
@@ -116,10 +116,10 @@ export default function VerseCard({
 
       {/* Translation */}
       <div className="px-6 py-5">
-        {onShowTafsir ? (
+        {onShowReflection ? (
           <button
             type="button"
-            onClick={onShowTafsir}
+            onClick={onShowReflection}
             className="w-full rounded-xl text-left transition-colors hover:bg-white/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40 -m-2 p-2"
           >
             <p
@@ -129,7 +129,7 @@ export default function VerseCard({
               &ldquo;{verse.translation}&rdquo;
             </p>
             <p className="mt-2 text-xs font-medium" style={{ color: "var(--gold)" }}>
-              Tap for tafsir →
+              Tap for reflection →
             </p>
           </button>
         ) : (

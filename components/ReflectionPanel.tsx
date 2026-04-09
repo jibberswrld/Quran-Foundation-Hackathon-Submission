@@ -2,29 +2,29 @@
 
 import { useState, useEffect } from "react";
 import type { Verse } from "@/lib/types";
-import { fetchVerseTafsir } from "@/lib/quran";
+import { fetchReflectionTafsir } from "@/lib/reflection";
 
-interface TafsirPanelProps {
+interface ReflectionPanelProps {
   verse: Verse;
   /** When true (e.g. opened from a bookmark), show content expanded immediately */
   defaultExpanded?: boolean;
-  /** Controlled mode: parent drives open/closed (e.g. “tap verse for tafsir”) */
+  /** Controlled mode: parent drives open/closed (e.g. “tap verse for reflection”) */
   expanded?: boolean;
   onExpandedChange?: (open: boolean) => void;
 }
 
-type TafsirState =
+type ReflectionState =
   | { status: "idle" }
   | { status: "loading" }
   | { status: "ready"; text: string | null }
   | { status: "error"; message: string };
 
-export default function TafsirPanel({
+export default function ReflectionPanel({
   verse,
   defaultExpanded = false,
   expanded: controlledExpanded,
   onExpandedChange,
-}: TafsirPanelProps) {
+}: ReflectionPanelProps) {
   const [uncontrolledExpanded, setUncontrolledExpanded] =
     useState(defaultExpanded);
   const expanded =
@@ -35,7 +35,7 @@ export default function TafsirPanel({
     onExpandedChange?.(open);
     if (controlledExpanded === undefined) setUncontrolledExpanded(open);
   };
-  const [state, setState] = useState<TafsirState>({ status: "idle" });
+  const [state, setState] = useState<ReflectionState>({ status: "idle" });
 
   useEffect(() => {
     if (controlledExpanded === undefined) {
@@ -50,7 +50,7 @@ export default function TafsirPanel({
     }
     let cancelled = false;
     setState({ status: "loading" });
-    fetchVerseTafsir(verse.verseKey)
+    fetchReflectionTafsir(verse.verseKey)
       .then((text) => {
         if (!cancelled) setState({ status: "ready", text });
       })
@@ -58,7 +58,8 @@ export default function TafsirPanel({
         if (!cancelled)
           setState({
             status: "error",
-            message: err instanceof Error ? err.message : "Could not load tafsir.",
+            message:
+              err instanceof Error ? err.message : "Could not load reflection.",
           });
       });
     return () => {
@@ -100,9 +101,9 @@ export default function TafsirPanel({
             ✦
           </span>
           <div className="min-w-0">
-            <h3 className="text-sm font-semibold">Tafsir</h3>
+            <h3 className="text-sm font-semibold">Reflection</h3>
             <p className="text-[11px] truncate" style={{ color: "var(--text-dim)" }}>
-              Ibn Kathir (English) · Quran.com Content API
+              Tafsir (Ibn Kathir, English) · Quran Foundation / Quran.com
             </p>
           </div>
         </div>

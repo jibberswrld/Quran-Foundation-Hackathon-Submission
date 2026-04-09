@@ -20,7 +20,7 @@ const cinzel = Cinzel({
 export const metadata: Metadata = {
   title: "Quran Coach",
   description:
-    "Your personal Quran reading companion — daily verses, tafsir, streaks, and progress tracking.",
+    "Your personal Quran reading companion — daily verses, scholarly reflection (tafsir), streaks, and progress tracking.",
   icons: { icon: "/favicon.ico" },
 };
 
@@ -40,7 +40,18 @@ export default function RootLayout({
           className="py-5 text-center text-xs border-t"
           style={{ borderColor: "var(--border)", color: "var(--text-dim)" }}
         >
-          © {new Date().getFullYear()} Quran Coach · Quran.com Content API
+          © {new Date().getFullYear()} Quran Coach · Quran Foundation data (Quran.com
+          API, same sources as{" "}
+          <a
+            href="https://mcp.quran.ai"
+            className="underline-offset-2 hover:underline"
+            style={{ color: "var(--text-muted)" }}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Quran MCP
+          </a>
+          )
         </footer>
       </body>
     </html>

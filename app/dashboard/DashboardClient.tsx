@@ -125,7 +125,7 @@ export default function DashboardClient() {
                       &ldquo;{b.translation}&rdquo;
                     </p>
                     <p className="mt-2 text-xs" style={{ color: "var(--text-dim)" }}>
-                      Open verse &amp; tafsir →
+                      Open verse &amp; reflection →
                     </p>
                   </Link>
                   <button

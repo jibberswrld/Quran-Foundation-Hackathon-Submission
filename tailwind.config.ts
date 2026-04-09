@@ -67,6 +67,7 @@ const config: Config = {
         "fade-up": "fadeUp 0.5s ease both",
         "fade-in": "fadeIn 0.4s ease both",
         "glow-pulse": "glowPulse 3s ease-in-out infinite",
+        "logo-aura": "logoAura 3.5s ease-in-out infinite",
         shimmer: "shimmer 2s ease-in-out infinite",
         "spin-slow": "spin 3s linear infinite",
       },
@@ -82,6 +83,16 @@ const config: Config = {
         glowPulse: {
           "0%, 100%": { boxShadow: "0 0 12px rgba(201, 162, 39, 0.15)" },
           "50%": { boxShadow: "0 0 28px rgba(201, 162, 39, 0.4)" },
+        },
+        logoAura: {
+          "0%, 100%": {
+            filter:
+              "drop-shadow(0 0 5px rgba(201, 162, 39, 0.35)) drop-shadow(0 0 12px rgba(201, 162, 39, 0.12))",
+          },
+          "50%": {
+            filter:
+              "drop-shadow(0 0 10px rgba(236, 201, 106, 0.55)) drop-shadow(0 0 20px rgba(201, 162, 39, 0.22))",
+          },
         },
         shimmer: {
           "0%": { backgroundPosition: "200% 0" },

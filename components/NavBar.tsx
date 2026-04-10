@@ -1,5 +1,5 @@
 import Link from "next/link";
-import BrandMark from "@/components/BrandMark";
+import NavBrand from "@/components/NavBrand";
 
 export default function NavBar() {
   return (
@@ -13,19 +13,7 @@ export default function NavBar() {
       }}
     >
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
-        <Link
-          href="/"
-          className="flex items-center gap-2.5 group"
-          aria-label="Quran Coach home"
-        >
-          <BrandMark />
-          <span
-            className="text-sm font-medium tracking-tight"
-            style={{ color: "var(--text)" }}
-          >
-            Quran Coach
-          </span>
-        </Link>
+        <NavBrand />
 
         <div className="hidden sm:flex items-center gap-1">
           {[

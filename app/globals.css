@@ -88,11 +88,21 @@
     border-radius: 12px;
     position: relative;
     overflow: hidden;
-    transition: border-color 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.25s ease;
   }
 
   .card:hover {
     border-color: var(--border-hover);
+    transform: translateY(-1px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card:hover {
+      transform: none;
+    }
   }
 
   /* Primary button — white on black */
@@ -194,11 +204,14 @@
     font-size: 0.8125rem;
     font-weight: 400;
     color: var(--text-dim);
-    transition: color 0.15s ease;
+    transition:
+      color 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .nav-link:hover {
     color: var(--text);
+    background-color: rgba(255, 255, 255, 0.04);
   }
 
   /* Progress bar track */
@@ -277,9 +290,13 @@
     animation: shimmer 2s ease-in-out infinite;
   }
 
-  /* Entrance animations */
-  .animate-fade-up   { animation: fadeUp 0.4s ease both; }
-  .animate-fade-in   { animation: fadeIn 0.3s ease both; }
+  /* Entrance animations — ease matches tailwind theme */
+  .animate-fade-up {
+    animation: fadeUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
 
   .anim-delay-1 { animation-delay: 50ms;  }
   .anim-delay-2 { animation-delay: 100ms; }
@@ -296,13 +313,34 @@
 }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0);    }
 }
 
 @keyframes fadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up,
+  .animate-fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .skeleton::after {
+    animation: none !important;
+  }
+
+  :where(.animate-logo-glow) {
+    animation: none !important;
+  }
+
+  .animate-brand-tap {
+    animation: none !important;
+  }
 }
 
 @keyframes spin {

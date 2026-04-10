@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useId } from "react";
 import { useRouter } from "next/navigation";
 import type { GoalType, UserGoal } from "@/lib/types";
 import { GOAL_DESCRIPTIONS } from "@/lib/goal-constants";
@@ -10,6 +10,7 @@ import { syncGoalToApi } from "@/lib/user";
 type Step = "type" | "value" | "confirm";
 
 export default function OnboardingClient() {
+  const moonGradId = `ob-moon-${useId().replace(/:/g, "")}`;
   const router = useRouter();
   const [step, setStep] = useState<Step>("type");
   const [goalType, setGoalType] = useState<GoalType>("finish_in_days");
@@ -57,20 +58,43 @@ export default function OnboardingClient() {
       {/* Header */}
       <div className="mb-10 text-center">
         <div
-          className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-xl"
-          style={{
-            border: "1px solid var(--border)",
-            background: "var(--bg-card)",
-          }}
+          className="mx-auto mb-5 w-fit rounded-xl bg-gradient-to-br from-white/[0.2] via-white/[0.08] to-white/[0.03] p-px shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
+          aria-hidden
         >
-          <svg
-            className="h-5 w-5"
-            viewBox="0 0 24 24"
-            fill="var(--text)"
-            xmlns="http://www.w3.org/2000/svg"
+          <div
+            className="flex h-12 w-12 items-center justify-center rounded-[11px] animate-logo-glow"
+            style={{
+              background:
+                "linear-gradient(165deg, var(--bg-raised) 0%, var(--bg-card) 50%, #050505 100%)",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)",
+            }}
           >
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
+            <svg
+              className="h-6 w-6 drop-shadow-[0_0_12px_rgba(255,255,255,0.12)]"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <linearGradient
+                  id={moonGradId}
+                  x1="5"
+                  y1="4"
+                  x2="19"
+                  y2="20"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stopColor="#ffffff" />
+                  <stop offset="0.55" stopColor="#d4d4d4" />
+                  <stop offset="1" stopColor="#737373" />
+                </linearGradient>
+              </defs>
+              <path
+                fill={`url(#${moonGradId})`}
+                d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
+              />
+            </svg>
+          </div>
         </div>
         <h1
           className="text-3xl font-normal tracking-tight"

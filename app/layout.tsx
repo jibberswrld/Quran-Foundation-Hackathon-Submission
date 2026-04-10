@@ -38,7 +38,7 @@ export default function RootLayout({
         <NavBar />
         <main className="flex-1">{children}</main>
         <footer
-          className="py-6 text-center text-xs"
+          className="py-6 text-center text-xs animate-fade-in anim-delay-6"
           style={{
             borderTop: "1px solid var(--border)",
             color: "var(--text-dim)",

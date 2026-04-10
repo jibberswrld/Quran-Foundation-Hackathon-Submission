@@ -10,23 +10,25 @@ export const metadata: Metadata = {
 export default function SettingsPage() {
   return (
     <div className="mx-auto max-w-lg px-6 py-16">
-      <div className="mb-10 animate-fade-up">
+      <div className="mb-10">
         <Link
           href="/dashboard"
-          className="inline-flex items-center gap-1 text-sm transition-colors"
+          className="inline-flex items-center gap-1 text-sm transition-colors duration-200 animate-fade-up"
           style={{ color: "var(--text-dim)" }}
         >
           &larr; Dashboard
         </Link>
-        <h1
-          className="mt-5 text-4xl font-normal tracking-tight"
-          style={{ color: "var(--text)" }}
-        >
-          Settings
-        </h1>
-        <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
-          Update your reading plan. Data stays on this device.
-        </p>
+        <div className="mt-5 animate-fade-up anim-delay-1">
+          <h1
+            className="text-4xl font-normal tracking-tight"
+            style={{ color: "var(--text)" }}
+          >
+            Settings
+          </h1>
+          <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
+            Update your reading plan. Data stays on this device.
+          </p>
+        </div>
       </div>
 
       <GoalEditorSection />

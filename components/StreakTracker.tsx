@@ -7,17 +7,45 @@ interface StreakTrackerProps {
   goal: UserGoal | null;
 }
 
+function FlameIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M12 3c2.5 4 6 6 6 10a6 6 0 1 1-12 0c0-2 1.5-3.5 2.5-4.5C9.5 7 9 5 9 3c1.5 1.5 2 2.5 3 0z" />
+    </svg>
+  );
+}
+
+function ScrollIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M4 6a2 2 0 0 1 2-2h11v14a2 2 0 0 0 2 2H7a2 2 0 0 1-2-2" />
+      <path d="M17 4a2 2 0 0 1 2 2v2h-2" />
+      <path d="M8 9h6M8 13h6" opacity="0.55" />
+    </svg>
+  );
+}
+
 export default function StreakTracker({ progress, goal }: StreakTrackerProps) {
   if (!progress && !goal) {
     return (
       <div
-        className="flex flex-col items-center justify-center gap-3 rounded-xl p-10 text-center"
+        className="relative flex flex-col items-center justify-center gap-3 rounded-2xl p-12 text-center overflow-hidden"
         style={{
           border: "1px dashed var(--border)",
-          background: "var(--bg-card)",
+          background:
+            "radial-gradient(circle at 50% 0%, rgba(232, 182, 76, 0.06), transparent 60%), var(--bg-card)",
         }}
       >
-        <p className="text-sm font-medium" style={{ color: "var(--text)" }}>
+        <div className="h-12 w-12 rounded-full flex items-center justify-center animate-float"
+          style={{
+            background: "rgba(232, 182, 76, 0.08)",
+            border: "1px solid rgba(232, 182, 76, 0.25)",
+            color: "var(--gold-soft)",
+          }}
+        >
+          <FlameIcon />
+        </div>
+        <p className="font-display text-lg" style={{ color: "var(--text)" }}>
           No progress yet
         </p>
         <p className="text-xs" style={{ color: "var(--text-dim)" }}>
@@ -50,70 +78,98 @@ export default function StreakTracker({ progress, goal }: StreakTrackerProps) {
       ? Math.min(100, Math.round((thisWeekRead / weeklyTarget) * 100))
       : 0;
 
+  const stats = [
+    {
+      label: "Streak",
+      value: streakDays,
+      suffix: "days",
+      icon: <FlameIcon />,
+      tone: "gold",
+    },
+    {
+      label: "Verses read",
+      value: totalRead,
+      suffix: "total",
+      icon: <ScrollIcon />,
+      tone: "sage",
+    },
+  ] as const;
+
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-3">
-        <div
-          className="rounded-xl p-4 animate-fade-up"
-          style={{
-            background: "var(--bg-card)",
-            border: "1px solid var(--border)",
-          }}
-        >
-          <p className="section-label mb-3">Streak</p>
-          <p
-            className="text-3xl font-semibold tracking-tight tabular-nums"
-            style={{ color: "var(--text)" }}
+        {stats.map((s, i) => (
+          <div
+            key={s.label}
+            className={`card relative p-5 animate-fade-up`}
+            style={{
+              animationDelay: `${i * 80}ms`,
+              backgroundImage:
+                s.tone === "gold"
+                  ? "radial-gradient(circle at 85% 0%, rgba(232, 182, 76, 0.10), transparent 55%)"
+                  : "radial-gradient(circle at 85% 0%, rgba(124, 201, 169, 0.10), transparent 55%)",
+            }}
           >
-            {streakDays}
-          </p>
-          <p className="mt-1 text-xs" style={{ color: "var(--text-dim)" }}>
-            days
-          </p>
-        </div>
-
-        <div
-          className="rounded-xl p-4 animate-fade-up anim-delay-1"
-          style={{
-            background: "var(--bg-card)",
-            border: "1px solid var(--border)",
-          }}
-        >
-          <p className="section-label mb-3">Verses read</p>
-          <p
-            className="text-3xl font-semibold tracking-tight tabular-nums"
-            style={{ color: "var(--text)" }}
-          >
-            {totalRead.toLocaleString()}
-          </p>
-          <p className="mt-1 text-xs" style={{ color: "var(--text-dim)" }}>
-            total
-          </p>
-        </div>
+            <div className="flex items-center justify-between mb-3">
+              <p className="section-label !text-[0.62rem]">{s.label}</p>
+              <span
+                className="h-7 w-7 rounded-lg flex items-center justify-center"
+                style={{
+                  background:
+                    s.tone === "gold"
+                      ? "rgba(232, 182, 76, 0.10)"
+                      : "rgba(124, 201, 169, 0.10)",
+                  color:
+                    s.tone === "gold" ? "var(--gold-soft)" : "var(--sage)",
+                  border: `1px solid ${
+                    s.tone === "gold"
+                      ? "rgba(232, 182, 76, 0.22)"
+                      : "rgba(124, 201, 169, 0.22)"
+                  }`,
+                }}
+              >
+                {s.icon}
+              </span>
+            </div>
+            <p
+              className="font-display text-[2.25rem] font-medium leading-none tabular-nums"
+              style={{ color: "var(--text)" }}
+            >
+              {s.value.toLocaleString()}
+            </p>
+            <p
+              className="mt-1.5 text-xs"
+              style={{ color: "var(--text-dim)" }}
+            >
+              {s.suffix}
+            </p>
+          </div>
+        ))}
       </div>
 
       {/* Weekly progress */}
       {goal && weeklyTarget > 0 && (
         <div
-          className="rounded-xl p-4 animate-fade-up anim-delay-2"
+          className="card relative p-5 animate-fade-up anim-delay-2"
           style={{
-            background: "var(--bg-card)",
-            border: "1px solid var(--border)",
+            backgroundImage:
+              "radial-gradient(circle at 50% 0%, rgba(232, 182, 76, 0.08), transparent 60%)",
           }}
         >
-          <div className="mb-3 flex items-center justify-between">
+          <div className="mb-3 flex items-baseline justify-between">
             <span
-              className="text-sm font-medium"
+              className="font-display text-base"
               style={{ color: "var(--text)" }}
             >
               Weekly progress
             </span>
             <span
-              className="text-xs tabular-nums"
-              style={{ color: "var(--text-dim)" }}
+              className="text-xs tabular-nums font-medium"
+              style={{ color: "var(--gold-soft)" }}
             >
-              {thisWeekRead} / {weeklyTarget}
+              {thisWeekRead}
+              <span style={{ color: "var(--text-dim)" }}> / {weeklyTarget}</span>
             </span>
           </div>
 
@@ -129,7 +185,7 @@ export default function StreakTracker({ progress, goal }: StreakTrackerProps) {
             />
           </div>
 
-          <p className="mt-2.5 text-xs" style={{ color: "var(--text-dim)" }}>
+          <p className="mt-3 text-xs" style={{ color: "var(--text-dim)" }}>
             {weeklyLabel}
           </p>
         </div>
@@ -137,7 +193,7 @@ export default function StreakTracker({ progress, goal }: StreakTrackerProps) {
 
       {progress?.lastReadAt && (
         <p
-          className="text-right text-xs"
+          className="text-right text-xs font-serif-italic"
           style={{ color: "var(--text-dim)" }}
         >
           Last read{" "}

@@ -41,22 +41,38 @@ export default function DashboardClient() {
 
   return (
     <div className="space-y-10">
+      {/* Header */}
+      <header className="animate-fade-up">
+        <p className="section-label mb-3">Your practice</p>
+        <h1 className="font-display text-[2.25rem] leading-[1.05] sm:text-[3rem]" style={{ color: "var(--text)" }}>
+          Welcome back,{" "}
+          <span className="font-serif-italic" style={{ color: "var(--gold-soft)" }}>
+            friend
+          </span>
+          .
+        </h1>
+        <p className="mt-3 max-w-lg text-sm leading-relaxed" style={{ color: "var(--text-muted)" }}>
+          A quiet moment today is worth more than a perfect one tomorrow. Pick up where you left off.
+        </p>
+      </header>
+
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Progress */}
         <section className="animate-fade-up anim-delay-1">
-          <p className="section-label mb-3">Progress</p>
+          <p className="section-label mb-4">Progress</p>
           <StreakTracker progress={mergedProgress} goal={userState.goal} />
           <Link
             href="/read"
-            className="btn-primary mt-4 block w-full py-2.5 text-center text-sm"
+            className="btn-primary mt-5 block w-full py-3 text-center text-sm"
           >
-            Start today&apos;s reading &rarr;
+            Start today&rsquo;s reading
+            <svg className="ml-2 inline-block" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
           </Link>
         </section>
 
         {/* Bookmarks */}
         <section className="animate-fade-up anim-delay-2">
-          <p className="section-label mb-3">Bookmarked verses</p>
+          <p className="section-label mb-4">Bookmarked verses</p>
 
           {userState.bookmarks.length === 0 ? (
             <div

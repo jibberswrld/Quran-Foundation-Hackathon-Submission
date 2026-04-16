@@ -12,25 +12,32 @@ export default function BrandMark() {
     <div className="relative shrink-0" aria-hidden>
       {/* Outer halo — soft breathing light */}
       <div
-        className="pointer-events-none absolute -inset-1 rounded-xl bg-gradient-to-br from-white/[0.12] via-transparent to-transparent opacity-0 blur-md transition-opacity duration-500 group-hover:opacity-100"
+        className="pointer-events-none absolute -inset-1.5 rounded-xl opacity-0 blur-lg transition-opacity duration-500 group-hover:opacity-100"
+        style={{ background: "radial-gradient(circle, rgba(232, 182, 76, 0.45), transparent 65%)" }}
       />
-      <div className="rounded-lg bg-gradient-to-br from-white/[0.22] via-white/[0.08] to-white/[0.03] p-px shadow-[0_0_0_1px_rgba(255,255,255,0.06)] transition-all duration-300 group-hover:from-white/[0.32] group-hover:via-white/[0.12] group-hover:shadow-[0_0_0_1px_rgba(255,255,255,0.12),0_0_24px_rgba(255,255,255,0.06)]">
+      <div className="rounded-xl p-px transition-all duration-300"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(245, 207, 122, 0.45), rgba(124, 201, 169, 0.18) 55%, rgba(232, 182, 76, 0.05))",
+        }}
+      >
         <div
-          className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-[7px] animate-logo-glow"
+          className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-[11px] animate-logo-glow"
           style={{
             background:
-              "linear-gradient(165deg, var(--bg-raised) 0%, var(--bg-card) 45%, #050505 100%)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07)",
+              "linear-gradient(165deg, #1a2430 0%, #0e151d 55%, #050a0f 100%)",
+            boxShadow: "inset 0 1px 0 rgba(255, 235, 180, 0.12)",
           }}
         >
           <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/[0.07] via-transparent to-transparent"
+            className="pointer-events-none absolute inset-0"
+            style={{ background: "radial-gradient(circle at 30% 25%, rgba(232, 182, 76, 0.22), transparent 60%)" }}
           />
           {/* Hover sheen */}
-          <div className="pointer-events-none absolute -left-full top-0 h-full w-1/2 skew-x-12 bg-gradient-to-r from-transparent via-white/15 to-transparent opacity-0 transition-all duration-700 ease-out group-hover:left-full group-hover:opacity-100" />
+          <div className="pointer-events-none absolute -left-full top-0 h-full w-1/2 skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-0 transition-all duration-700 ease-out group-hover:left-full group-hover:opacity-100" />
 
           <svg
-            className="relative z-10 h-[18px] w-[18px] drop-shadow-[0_0_10px_rgba(255,255,255,0.15)] transition-transform duration-300 ease-out group-hover:scale-105 group-hover:-rotate-6"
+            className="relative z-10 h-[19px] w-[19px] drop-shadow-[0_0_10px_rgba(232,182,76,0.55)] transition-transform duration-500 ease-out group-hover:scale-110 group-hover:-rotate-[8deg]"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -44,9 +51,9 @@ export default function BrandMark() {
                 y2="20"
                 gradientUnits="userSpaceOnUse"
               >
-                <stop stopColor="#ffffff" />
-                <stop offset="0.5" stopColor="#e4e4e4" />
-                <stop offset="1" stopColor="#9a9a9a" />
+                <stop stopColor="#fff3d1" />
+                <stop offset="0.55" stopColor="#e8b64c" />
+                <stop offset="1" stopColor="#8a5f14" />
               </linearGradient>
             </defs>
             <path
@@ -55,8 +62,8 @@ export default function BrandMark() {
             />
           </svg>
 
-          <span className="pointer-events-none absolute right-1 top-1 h-0.5 w-0.5 rounded-full bg-white/90 shadow-[0_0_6px_rgba(255,255,255,0.8)]" />
-          <span className="pointer-events-none absolute bottom-1.5 left-1 h-px w-px rounded-full bg-white/50" />
+          <span className="pointer-events-none absolute right-1 top-1 h-1 w-1 rounded-full" style={{ background: "#fff3d1", boxShadow: "0 0 6px rgba(255,243,209,0.9)" }} />
+          <span className="pointer-events-none absolute bottom-1.5 left-1 h-px w-px rounded-full bg-white/60" />
         </div>
       </div>
     </div>

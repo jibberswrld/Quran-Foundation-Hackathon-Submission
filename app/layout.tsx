@@ -22,7 +22,6 @@ export const metadata: Metadata = {
   title: "Quran Coach",
   description:
     "Your personal Quran reading companion — daily verses, scholarly reflection (tafsir), streaks, and progress tracking.",
-  icons: { icon: "/favicon.ico" },
 };
 
 export default function RootLayout({

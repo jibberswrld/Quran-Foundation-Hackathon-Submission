@@ -1,11 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { clearAllCoachLocalStorage } from "@/lib/storage";
 
 export default function ClearLocalDataSection() {
-  const router = useRouter();
   const [confirmText, setConfirmText] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -15,8 +13,9 @@ export default function ClearLocalDataSection() {
     if (!canClear) return;
     setLoading(true);
     clearAllCoachLocalStorage();
-    router.replace("/onboarding");
-    router.refresh();
+    if (typeof window !== "undefined") {
+      window.location.href = "/onboarding";
+    }
   }
 
   return (

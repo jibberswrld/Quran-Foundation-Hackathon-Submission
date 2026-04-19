@@ -196,4 +196,26 @@ export function clearAllCoachLocalStorage(): void {
   removeItem(KEYS.PROGRESS);
   removeItem(KEYS.BOOKMARKS);
   removeItem(KEYS.REFLECTIONS);
+
+  if (typeof window === "undefined") return;
+  try {
+    const toRemove: string[] = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i);
+      if (key && key.startsWith("qc:")) toRemove.push(key);
+    }
+    toRemove.forEach((k) => window.localStorage.removeItem(k));
+  } catch {
+    // Silently ignore
+  }
+  try {
+    const toRemove: string[] = [];
+    for (let i = 0; i < window.sessionStorage.length; i++) {
+      const key = window.sessionStorage.key(i);
+      if (key && key.startsWith("qc:")) toRemove.push(key);
+    }
+    toRemove.forEach((k) => window.sessionStorage.removeItem(k));
+  } catch {
+    // Silently ignore
+  }
 }

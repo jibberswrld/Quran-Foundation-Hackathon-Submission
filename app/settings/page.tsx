@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import ClearLocalDataSection from "./ClearLocalDataSection";
-import GoalEditorSection from "@/components/GoalEditorSection";
+import SettingsClient from "./SettingsClient";
 
 export const metadata: Metadata = {
   title: "Settings · Quran Coach",
@@ -31,12 +30,7 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      <GoalEditorSection />
-
-      <section className="animate-fade-up anim-delay-2">
-        <p className="section-label mb-3">Data</p>
-        <ClearLocalDataSection />
-      </section>
+      <SettingsClient />
     </div>
   );
 }

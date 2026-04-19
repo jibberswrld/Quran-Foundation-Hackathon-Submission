@@ -97,7 +97,7 @@ export default function DashboardClient() {
               {userState.bookmarks.map((b, i) => (
                 <li
                   key={b.verseKey}
-                  className="group overflow-hidden rounded-xl flex gap-3 items-start transition-all duration-150 animate-fade-up"
+                  className="group overflow-hidden rounded-xl flex gap-3 items-start transition-all duration-150 animate-fade-up hover:border-white/20"
                   style={{
                     animationDelay: `${i * 50}ms`,
                     background: "var(--bg-card)",
@@ -107,7 +107,7 @@ export default function DashboardClient() {
                 >
                   <Link
                     href={`/read?verse=${encodeURIComponent(b.verseKey)}`}
-                    className="flex-1 min-w-0 text-left rounded-md -m-1 p-1 transition-colors hover:bg-white/[0.03]"
+                    className="flex-1 min-w-0 text-left rounded-md -m-1 p-1 cursor-pointer transition-colors hover:bg-white/[0.04]"
                   >
                     <p
                       className="mb-1 text-xs font-medium"

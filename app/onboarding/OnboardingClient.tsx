@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useId } from "react";
+import { useState, useId, useLayoutEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { GoalType, UserGoal } from "@/lib/types";
 import { GOAL_DESCRIPTIONS } from "@/lib/goal-constants";
-import { saveGoal } from "@/lib/storage";
+import { loadGoal, saveGoal } from "@/lib/storage";
 import { syncGoalToApi } from "@/lib/user";
 
 type Step = "type" | "value" | "confirm";
@@ -12,7 +12,16 @@ type Step = "type" | "value" | "confirm";
 export default function OnboardingClient() {
   const moonGradId = `ob-moon-${useId().replace(/:/g, "")}`;
   const router = useRouter();
+  const [checkedExisting, setCheckedExisting] = useState(false);
   const [step, setStep] = useState<Step>("type");
+
+  useLayoutEffect(() => {
+    if (loadGoal()) {
+      router.replace("/read");
+      return;
+    }
+    setCheckedExisting(true);
+  }, [router]);
   const [goalType, setGoalType] = useState<GoalType>("finish_in_days");
   const [goalValue, setGoalValue] = useState<number>(365);
   const [saving, setSaving] = useState(false);
@@ -52,6 +61,16 @@ export default function OnboardingClient() {
   const desc = GOAL_DESCRIPTIONS[goalType];
   const steps: Step[] = ["type", "value", "confirm"];
   const currentStepIndex = steps.indexOf(step);
+
+  if (!checkedExisting) {
+    return (
+      <div
+        className="min-h-[40vh] py-16"
+        aria-busy="true"
+        aria-label="Loading"
+      />
+    );
+  }
 
   return (
     <div className="w-full max-w-md animate-fade-up">

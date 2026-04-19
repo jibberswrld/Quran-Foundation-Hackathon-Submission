@@ -21,15 +21,6 @@ function WordIcon() {
   );
 }
 
-function SparkIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8" />
-      <circle cx="12" cy="12" r="2.5" />
-    </svg>
-  );
-}
-
 function QuizIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -121,13 +112,6 @@ const features = [
     description: "Study each word with clarity as meaning unfolds.",
     icon: WordIcon,
     tone: "sage",
-    span: "",
-  },
-  {
-    title: "AI reflection",
-    description: "Guided thoughts on the passage — yours to keep.",
-    icon: SparkIcon,
-    tone: "gold",
     span: "",
   },
   {
@@ -299,7 +283,7 @@ export default function LandingPage() {
           <div>
             <p className="section-label mb-4">The practice</p>
             <h2 className="font-display text-3xl leading-tight sm:text-5xl" style={{ color: "var(--text)" }}>
-              Five rituals,{" "}
+              Four rituals,{" "}
               <span className="font-serif-italic" style={{ color: "var(--sage)" }}>
                 woven together
               </span>
@@ -351,14 +335,6 @@ export default function LandingPage() {
                 >
                   {f.description}
                 </p>
-
-                <span
-                  className="mt-6 inline-flex items-center gap-1 text-xs font-medium transition-all duration-300 group-hover:gap-2"
-                  style={{ color: tone.color }}
-                >
-                  Learn more
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-                </span>
               </li>
             );
           })}
